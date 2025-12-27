@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36804.6
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blue Prince Neuro-Sama Integration Mod", "Blue Prince Neuro-Sama Integration Mod.csproj", "{AF248B9C-0511-411B-BE32-1650C912EF9B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuroSDKCsharp", "..\..\..\Documents\CSharp-Neuro-SDK\NeuroSDKCsharp\NeuroSDKCsharp.csproj", "{7B8AD4B6-CEA0-2949-D94A-3EFA197D55E4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AF248B9C-0511-411B-BE32-1650C912EF9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF248B9C-0511-411B-BE32-1650C912EF9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF248B9C-0511-411B-BE32-1650C912EF9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF248B9C-0511-411B-BE32-1650C912EF9B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B8AD4B6-CEA0-2949-D94A-3EFA197D55E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B8AD4B6-CEA0-2949-D94A-3EFA197D55E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B8AD4B6-CEA0-2949-D94A-3EFA197D55E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B8AD4B6-CEA0-2949-D94A-3EFA197D55E4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E57FDDDD-EC62-465B-B101-85F18089523D}
+	EndGlobalSection
+EndGlobal
