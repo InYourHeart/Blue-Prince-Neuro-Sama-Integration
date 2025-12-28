@@ -362,6 +362,10 @@
 	<ItemGroup>
 	  <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Rooms\" />
+	</ItemGroup>
 	
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 		<Exec Command="COPY &quot;$(TargetPath)&quot; &quot;F:\Games\Blue Prince\Mods&quot;" />

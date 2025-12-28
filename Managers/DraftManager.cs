@@ -15,6 +15,19 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.Managers
         private static int pickedRoomSlots = 0;
         private volatile static string draftingContext = "";
 
+        public string goldAmount = "0";
+        public string keyAmount = "0";
+        public string gemAmount = "0";
+        public string stepAmount = "0";
+
+        public string firstRoomCost = "0";
+        public string secondRoomCost = "0";
+        public string thirdRoomCost = "0";
+
+        public static void FinishDraft()
+        {
+
+        }
 
         public static void AddPickedRoom(RoomCard newRoom)
         {
@@ -27,7 +40,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.Managers
 
             if (pickedRoomSlots == 1)
             {
-                draftingContext += "The following three rooms can now be drafted:\n";
+                draftingContext += "The following three rooms have been pulled from the draft pool and may chosen from:\n";
             }
 
             draftingContext += pickedRoomSlots + ". " + RoomCardUtil.GetDraftingContext(newRoom);
@@ -48,10 +61,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.Managers
         }
 
         public static string GetInventory() {
-            string goldAmount = "0";
-            string keyAmount = "0";
-            string gemAmount = "0";
-            string stepAmount = "0";
+
 
             GameObject goldGameObject = GameObject.Find("Gold #");
             if (goldGameObject != null)
@@ -76,7 +86,6 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.Managers
             {
                 stepAmount = stepsGameObject.GetComponent<TextMeshPro>().text;
             }
-
 
             return "You currently have " + goldAmount + " gold, " + keyAmount + " key(s), " + gemAmount + " gem(s) and " + stepAmount + " steps.";
         }
