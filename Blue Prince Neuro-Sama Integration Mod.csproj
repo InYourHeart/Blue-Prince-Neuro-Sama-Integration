@@ -355,16 +355,14 @@
 		<Compile Include="Actions\ChooseRoomAction.cs" />
 		<Compile Include="Managers\DraftManager.cs" />
 		<Compile Include="Core.cs" />
+		<Compile Include="Managers\HouseManager.cs" />
 		<Compile Include="Managers\InventoryManager.cs" />
-		<Compile Include="ObjectUtils\RoomCardUtil.cs" />
+		<Compile Include="Rooms\DoorLayout.cs" />
+		<Compile Include="Rooms\Room.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Rooms\" />
 	</ItemGroup>
 	
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">

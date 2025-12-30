@@ -1,37 +1,35 @@
 ﻿using Il2Cpp;
-using MelonLoader;
 using UnityEngine;
 
-namespace Blue_Prince_Neuro_Sama_Integration_Mod.ObjectWrappers
+namespace Blue_Prince_Neuro_Sama_Integration_Mod.Rooms
 {
-    public class RoomCardUtil
+    public class Room
     {
-        public static string GetDraftingContext(RoomCard newRoom)
+        public string name { get; set; }
+        public string description { get; set; }
+        public string rarity { get; set; }
+        public string effect { get; set; }
+        public string types { get; set; }
+        public int cost { get; set; }
+
+        public Room(string roomName)
         {
-            //TODO Various effects that change costs and resources that can be spent
-            //TODO This way of getting the Room Engine PlayMakerFSM is kinda ass. No hard guarantees of names matching
-            PlayMakerFSM prefabFsm = GameObject.Find(newRoom.Template.Prefab.GetComponent<PlayMakerFSM>().name.ToUpper()).GetComponent<PlayMakerFSM>();
+            PlayMakerFSM fsm = GameObject.Find(name).GetComponent<PlayMakerFSM>();
+            Initialize(fsm);
+        }
 
-            string roomName = GetRoomName(prefabFsm);
-            //string roomDescription = GetRoomDescription(prefabFsm);
-            string roomRarity = GetRoomRarity(prefabFsm);
-            string roomEffect = GetRoomEffect(prefabFsm);
-            string roomTypes = GetRoomTypes(prefabFsm);
-            int roomCost = GetCost(prefabFsm);
+        public Room(PlayMakerFSM fsm) {
+            Initialize(fsm);
+        }
 
-            string draftingContext = "";
-            draftingContext += roomName + ". " + roomRarity + " rarity.";
-            if (roomEffect != "")
-            {
-                draftingContext += " It has the following effect: " + roomEffect + ".";
-            }
-            draftingContext += " It is " + roomTypes + ".";
-            if (roomCost > 0)
-            {
-                draftingContext += "It costs " + roomCost + " gems to draft.";
-            }
-
-            return draftingContext;
+        private void Initialize(PlayMakerFSM fsm)
+        {
+            name = GetRoomName(fsm);
+            description = GetRoomDescription(fsm);
+            rarity = GetRoomRarity(fsm);
+            effect = GetRoomEffect(fsm);
+            types = GetRoomTypes(fsm);
+            cost = GetCost(fsm);
         }
 
         private static string GetRoomName(PlayMakerFSM prefabFsm) {
@@ -61,7 +59,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.ObjectWrappers
 
         private static string GetRoomEffect(PlayMakerFSM prefabFsm)
         {
-            //Because there is no string specifying the room effects (the text on their icons is part of the image), we gotta do it manually. This is so ass lmao
+            //Because there is no string specifying the room effects (the text on their icons is part of the image), we gotta do it manually.
             switch (prefabFsm.name)
             {
                 case "THE FOUNDATION":
@@ -370,7 +368,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.ObjectWrappers
                     return "Whenever you enter CHAPEL, lose 1 gold";
                 case "MAID'S CHAMBER":
                     return "Less likely to find items laying around in your house";
-                case "ARCHIVE":
+                case "ARCHIVES":
                     return "While drafting, you will no longer be able to see all 3 of your potential Floor Plans";
                 case "GYMNASIUM":
                     return "Whenever you enter GYMNASIUM, lose 2 steps";
@@ -414,7 +412,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.ObjectWrappers
                     return "The doors in this room are security locked";
                 case "TOOLSHED":
                     return "2 special items";
-                case "SHELTER":
+                case "BOMB SHELTER":
                     return "SHELTER protects you from the negative effects of the next 3 RED ROOMS drafted";
                 case "SCHOOLHOUSE":
                     return "Adds 8 CLASSROOMS to today's Draft Pool";
@@ -448,97 +446,97 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.ObjectWrappers
 
             if (fullTypeString.Contains("Permanent"))
             {
-                types += " Permanent,";
+                types += "Permanent,";
             }
 
             if (fullTypeString.Contains("Mechanical"))
             {
-                types += " a Mechanical room,";
+                types += "a Mechanical room,";
             }
 
             if (fullTypeString.Contains("Spread"))
             {
-                types += " a Spread room,";
+                types += "a Spread room,";
             }
 
             if (fullTypeString.Contains("Puzzle"))
             {
-                types += " a Puzzle room,";
+                types += "a Puzzle room,";
             }
 
             if (fullTypeString.Contains("Entry"))
             {
-                types += " an Entry room,";
+                types += "an Entry room,";
             }
 
             if (fullTypeString.Contains("Blueprint"))
             {
-                types += " a Blueprint,";
+                types += "a Blueprint,";
             }
 
             if (fullTypeString.Contains("Hallway"))
             {
-                types += " a Hallway,";
+                types += "a Hallway,";
             }
 
             if (fullTypeString.Contains("Bedroom"))
             {
-                types += " a Bedroom,";
+                types += "a Bedroom,";
             }
 
             if (fullTypeString.Contains("Green Room"))
             {
-                types += " a Green Room,";
+                types += "a Green Room,";
             }
 
             if (fullTypeString.Contains("Red Room"))
             {
-                types += " a Red Room,";
+                types += "a Red Room,";
             }
 
             if (fullTypeString.Contains("Shop"))
             {
-                types += " a Shop,";
+                types += "a Shop,";
             }
 
             if (fullTypeString.Contains("Blackprint"))
             {
-                types += " a Blackprint,";
+                types += "a Blackprint,";
             }
 
             if (fullTypeString.Contains("Outer Room"))
             {
-                types += " an Outer Room,";
+                types += "an Outer Room,";
             }
 
             if (fullTypeString.Contains("Dead End"))
             {
-                types += " a Dead End,";
+                types += "a Dead End,";
             }
 
             if (fullTypeString.Contains("Upgrade"))
             {
-                types += " an Upgrade,";
+                types += "an Upgrade,";
             }
 
             if ((fullTypeString).Contains("Addition"))
             {
-                types += " an Addition,";
+                types += "an Addition,";
             }
 
             if (fullTypeString.Contains("Tomorrow"))
             {
-                types += " a Tomorrow room,";
+                types += "a Tomorrow room,";
             }
 
             if (fullTypeString.Contains("Drafting"))
             {
-                types += " a Drafting room,";
+                types += "a Drafting room,";
             }
 
             if (fullTypeString.Contains("Objective"))
             {
-                types += " an Objective,";
+                types += "an Objective,";
             }
 
             int commaCount = types.Split(",").Length - 1;
@@ -559,11 +557,6 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.ObjectWrappers
             }
 
             return types;
-        }
-
-        public static int GetCost(RoomCard roomCard)
-        {
-            return GetCost(GameObject.Find(roomCard.Template.Prefab.GetComponent<PlayMakerFSM>().name.ToUpper()).GetComponent<PlayMakerFSM>());
         }
 
         private static int GetCost(PlayMakerFSM prefabFsm)

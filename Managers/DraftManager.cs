@@ -1,9 +1,6 @@
 ﻿using Blue_Prince_Neuro_Sama_Integration_Mod.Actions;
-using Blue_Prince_Neuro_Sama_Integration_Mod.ObjectWrappers;
 using Il2Cpp;
 using Il2CppHutongGames.PlayMaker;
-using Il2CppTMPro;
-using MelonLoader;
 using NeuroSDKCsharp.Actions;
 using NeuroSDKCsharp.Messages.Outgoing;
 using UnityEngine;
@@ -15,18 +12,19 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.Managers
         private static int pickedRoomSlots = 0;
         private volatile static string draftingContext = "";
 
-        public string goldAmount = "0";
-        public string keyAmount = "0";
-        public string gemAmount = "0";
-        public string stepAmount = "0";
+        public static Rooms.Room firstRoom;
+        public static Rooms.Room secondRoom;
+        public static Rooms.Room thirdRoom;
 
-        public string firstRoomCost = "0";
-        public string secondRoomCost = "0";
-        public string thirdRoomCost = "0";
-
-        public static void FinishDraft()
+        public static void AddPickedRoom(GameObject newRoom)
         {
+            if (newRoom == null)
+            {
+                return;
+            }
 
+            PlayMakerFSM prefabFsm = newRoom.GetComponent<PlayMakerFSM>();
+            AddPickedRoom(prefabFsm);
         }
 
         public static void AddPickedRoom(RoomCard newRoom)
@@ -36,58 +34,63 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.Managers
                 return;
             }
 
+            PlayMakerFSM prefabFsm = GameObject.Find(newRoom.Template.Prefab.GetComponent<PlayMakerFSM>().name.ToUpper()).GetComponent<PlayMakerFSM>();
+            AddPickedRoom(prefabFsm);
+        }
+
+        public static void AddPickedRoom(PlayMakerFSM newRoom)
+        {
             pickedRoomSlots++;
 
-            if (pickedRoomSlots == 1)
+            Rooms.Room newRoomObject = new Rooms.Room(newRoom);
+
+            switch (pickedRoomSlots)
             {
-                draftingContext += "The following three rooms have been pulled from the draft pool and may chosen from:\n";
+                case 1:
+                    firstRoom = newRoomObject;
+                    break;
+                case 2:
+                    secondRoom = newRoomObject;
+                    break;
+                case 3:
+                    thirdRoom = newRoomObject;
+                    break;
             }
 
-            draftingContext += pickedRoomSlots + ". " + RoomCardUtil.GetDraftingContext(newRoom);
-
-            draftingContext += "\n";
-            
+            UpdateDraftingContext(newRoomObject);
 
             if (pickedRoomSlots == 3)
             {
-                Melon<Core>.Logger.Msg($"Draft context: {draftingContext}");
-
-                draftingContext += GetInventory();
-
                 new Thread(DraftManager.RegisterDraftActionWindow).Start();
 
                 pickedRoomSlots = 0;
             }
         }
 
-        public static string GetInventory() {
-
-
-            GameObject goldGameObject = GameObject.Find("Gold #");
-            if (goldGameObject != null)
+        private static void UpdateDraftingContext(Rooms.Room newRoomObject)
+        {
+            if (pickedRoomSlots == 1)
             {
-                goldAmount = goldGameObject.GetComponent<TextMeshPro>().text;
+                draftingContext += "The following three rooms have been pulled from the draft pool and may chosen from:\n";
             }
 
-            GameObject keyGameObject = GameObject.Find("Key #");
-            if (keyGameObject != null)
+            draftingContext += pickedRoomSlots + ". " + newRoomObject.name + ". " + newRoomObject.rarity + " rarity.";
+            if (newRoomObject.effect != "")
             {
-                keyAmount = keyGameObject.GetComponent<TextMeshPro>().text;
+                draftingContext += " It has the following effect: " + newRoomObject.effect + ".";
+            }
+            draftingContext += " It is " + newRoomObject.types + ".";
+            if (newRoomObject.cost > 0)
+            {
+                draftingContext += "It costs " + newRoomObject.cost + " gems to draft.";
             }
 
-            GameObject gemGameObject = GameObject.Find("Gem #");
-            if (gemGameObject != null)
-            {
-                gemAmount = gemGameObject.GetComponent<TextMeshPro>().text;
-            }
+            draftingContext += "\n";
 
-            GameObject stepsGameObject = GameObject.Find("Steps #");
-            if (stepsGameObject != null)
+            if (pickedRoomSlots == 3)
             {
-                stepAmount = stepsGameObject.GetComponent<TextMeshPro>().text;
+                draftingContext += InventoryManager.GetInventoryContext();
             }
-
-            return "You currently have " + goldAmount + " gold, " + keyAmount + " key(s), " + gemAmount + " gem(s) and " + stepAmount + " steps.";
         }
 
         public static void RegisterDraftActionWindow()
