@@ -1,5 +1,4 @@
-﻿using MelonLoader;
-using NeuroSDKCsharp.Actions;
+﻿using NeuroSDKCsharp.Actions;
 using NeuroSDKCsharp.Json;
 using NeuroSDKCsharp.Websocket;
 using Newtonsoft.Json.Linq;

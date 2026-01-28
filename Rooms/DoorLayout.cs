@@ -1,24 +1,26 @@
-﻿using static Il2CppRewired.UI.ControlMapper.ControlMapper;
+﻿using MelonLoader;
 
 namespace Blue_Prince_Neuro_Sama_Integration_Mod.Rooms
 {
     public class DoorLayout
     {
-        public bool north;
-        public bool east;
-        public bool south;
-        public bool west;
+        public Door north;
+        public Door east;
+        public Door south;
+        public Door west;
 
         //Rotation increments by 1 for every 90 degrees of clockwise rotation
-        public DoorLayout(bool northDefault, bool eastDefault, bool westDefault)
+        private DoorLayout(bool northDefault, bool eastDefault, bool westDefault, int rotation)
         {
             this.north = northDefault;
             this.east = eastDefault;
             this.south = true; //Plans always have a south door
             this.west = westDefault;
+
+            this.Rotate(rotation);
         }
 
-        public void Rotate(int rotations)
+        private void Rotate(int rotations)
         {
             if (rotations == 0)
             {
@@ -27,16 +29,56 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.Rooms
 
             bool tempNorth = north;
 
-            north = east;
-            east = south;
-            south = west;
-            west = tempNorth;
+            north = west;
+            west = south;
+            south = east;
+            east = tempNorth;
 
-            Rotate(rotations--);
+            Rotate(rotations - 1);
         }
 
-        public static DoorLayout GetDoorLayout(string roomName)
+        public string GetDraftingContext()
         {
+            if (!north && !east && !west) {
+                return " It does not have any doors.";
+            }
+
+            string draftingContext = " It has a door to the";
+
+            if (north) {
+                draftingContext += " north,";
+            }
+
+            if (east) {
+                draftingContext += " east,";
+            }
+
+            if (west) {
+                draftingContext += " west,";
+            }
+
+            if (south){
+                draftingContext += " south,";
+            }
+
+            int commaCount = draftingContext.Split(",").Length - 1;
+
+            //Remove the last comma
+            draftingContext = draftingContext.Remove(draftingContext.LastIndexOf(","), 1).Insert(draftingContext.LastIndexOf(","), ".");
+
+            //Replace the penultimate comma with an "and"
+            if (commaCount > 1)
+            {
+                draftingContext = draftingContext.Remove(draftingContext.LastIndexOf(","), 1).Insert(draftingContext.LastIndexOf(","), " and");
+            }
+
+            return draftingContext;
+        }
+
+        public static DoorLayout GetDoorLayout(string roomName, int rotation)
+        {
+            roomName = roomName.ToUpper();
+
             switch (roomName)
             {
                 case "THE FOUNDATION":
@@ -50,7 +92,6 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.Rooms
                 case "GOLDFISH AQUARIUM":
                 case "STARFISH AQUARIUM":
                 case "ELETRIC EEL AQUARIUM":
-                case "HALLWAY":
                 case "WEST WING HALL":
                 case "EAST WING HALL":
                 case "COURTYARD":
@@ -62,7 +103,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.Rooms
                 case "THRONE ROOM":
                 case "CLOSED EXHIBIT":
                     //Side only
-                    return new DoorLayout(false, true, true);
+                    return new DoorLayout(false, true, true ,rotation);
                 case "ENTRANCE HALL":
                 case "ANTECHAMBER":
                 case "PASSAGEWAY":
@@ -73,7 +114,8 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.Rooms
                 case "VESTIBULE":
                 case "MECHANARIUM":
                     //All doors
-                    return new DoorLayout(true, true, true);
+                    return new DoorLayout(true, true, true, rotation);
+                case "SPARE ROOM":
                 case "SERVANT'S SPARE QUARTERS":
                 case "HER LADYSHIP'S SPARE ROOM":
                 case "SPARE MASTER BEDROOM":
@@ -96,7 +138,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.Rooms
                 case "THE KENNEL":
                 case "TUNNEL":
                     //Straight rooms
-                    return new DoorLayout(true,false,false);
+                    return new DoorLayout(true,false,false, rotation);
                 case "SERVANT'S QUARTERS":
                 case "HER LADYSHIP'S CHAMBER":
                 case "MASTER BEDROOM":
@@ -147,7 +189,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.Rooms
                 case "GARAGE":
                 case "SECRET PASSAGE":
                     //Dead ends
-                    return new DoorLayout(false, false, false);
+                    return new DoorLayout(false, false, false, rotation);
                 case "ROTUNDA":
                 case "PARLOR":
                 case "FUNERAL PARLOR":
@@ -181,14 +223,15 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.Rooms
                 case "CONSERVATORY":
                 case "LOST AND FOUND":
                     //West only
-                    return new DoorLayout(false, false, true);
+                    return new DoorLayout(false, false, true, rotation);
                 case "ROOM 8":
                 case "MORNING ROOM":
                     //East only
-                    return new DoorLayout(false, true, false);
+                    return new DoorLayout(false, true, false, rotation);
                 case "BOILER ROOM":
+                case "HALLWAY":
                     //North and west
-                    return new DoorLayout(true, false, true);
+                    return new DoorLayout(true, false, true, rotation);
             }
 
             return null;

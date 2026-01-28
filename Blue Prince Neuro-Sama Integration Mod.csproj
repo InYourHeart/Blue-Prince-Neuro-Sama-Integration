@@ -356,7 +356,9 @@
 		<Compile Include="Managers\DraftManager.cs" />
 		<Compile Include="Core.cs" />
 		<Compile Include="Managers\HouseManager.cs" />
+		<Compile Include="Managers\GridFSMManager.cs" />
 		<Compile Include="Managers\InventoryManager.cs" />
+		<Compile Include="Rooms\Door.cs" />
 		<Compile Include="Rooms\DoorLayout.cs" />
 		<Compile Include="Rooms\Room.cs" />
 	</ItemGroup>

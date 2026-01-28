@@ -12,6 +12,8 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.Rooms
         public string types { get; set; }
         public int cost { get; set; }
 
+        public DoorLayout doorLayout { get; set; }
+
         public Room(string roomName)
         {
             PlayMakerFSM fsm = GameObject.Find(name).GetComponent<PlayMakerFSM>();
