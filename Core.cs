@@ -33,33 +33,10 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod
 
             if (sceneName.Contains("Mount Holly")){
                 Time.timeScale = 1;
+                GridFSMManager.Initialize();
             } else
             {
                 Time.timeScale = 5;
-            }
-        }
-
-        [HarmonyPatch(typeof(SendEvent), "OnEnter")]
-        private static class PlayMakerFSMPatches
-        {
-            private static void Postfix(SendEvent __instance)
-            {
-                if (__instance == null || __instance.owner == null) return;
-
-                GameObject go = __instance.owner;
-
-                if (DraftManager.pickedRoomSlots == 3 && go.name.Equals("PLAN MANAGEMENT"))
-                {
-                    PlayMakerFSM fsm = go.GetComponent<PlayMakerFSM>();
-
-                    foreach (FsmState state in fsm.FsmStates)
-                    {
-                        if (state != null && state.active && state.name.Equals("State 3"))
-                        {
-                            DraftManager.SendDraftingContext();
-                        }
-                    }
-                }
             }
         }
 
@@ -79,6 +56,27 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod
                     }
 
                     UpdatePlayerLocationContext();
+
+                    if (DraftManager.currentRoomSlot == 3)
+                    {
+                        GameObject gameObject = GameObject.Find("DRAFT UI");
+                        PlayMakerFSM fsm = gameObject.GetComponent<PlayMakerFSM>();
+
+                        foreach (FsmState state in fsm.FsmStates)
+                        {
+                            if (state != null && state.active && state.name.Equals("Animate In 2"))
+                            {
+                                //Checking for the third room plan's slide in animation to finish before sending the drafting context.
+                                //
+                                //Allows humans to see what is going on and prevents some race conditions that might
+                                // lock the player cam if the room plan was picked at the first possible moment
+                                if (!state.Actions[20].Active)
+                                {
+                                    DraftManager.SendDraftingContext();
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -117,13 +115,13 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod
                     {
                         if (rankTextMesh.text.Contains("Rank"))
                         {
-                            if (GridFSMManager.CurrentRank() == null || GridFSMManager.CurrentWing() == null)
+                            if (GridFSMManager.CurrentRank() == null || GridFSMManager.CurrentTile() == null)
                             {
                                 contextMessage += " (Rank 1, Tile 3)";
                             }
                             else
                             {
-                                contextMessage += " (Rank " + GridFSMManager.CurrentRank() + ", Tile " + GridFSMManager.CurrentWing() + ")";
+                                contextMessage += " (Rank " + GridFSMManager.CurrentRank() + ", Tile " + GridFSMManager.CurrentTile() + ")";
                             }
                         }
                     }
@@ -143,7 +141,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod
         {
             private static void Postfix(ref RoomCard __result)
             {
-                DraftManager.AddPickedRoom(__result); //TODO Move this to a later point so it catches the rotation in the draft option too
+                DraftManager.AddPickedRoom(__result);
             }
         }
 
@@ -152,7 +150,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod
         {
             private static void Postfix(ref GameObject __result)
             {
-                DraftManager.AddPickedRoom(__result); //TODO Move this to a later point so it catches the rotation in the draft option too
+                DraftManager.AddPickedRoom(__result);
             }
         }
 

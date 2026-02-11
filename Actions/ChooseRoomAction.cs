@@ -1,4 +1,6 @@
-﻿using NeuroSDKCsharp.Actions;
+﻿using Blue_Prince_Neuro_Sama_Integration_Mod.Managers;
+using MelonLoader;
+using NeuroSDKCsharp.Actions;
 using NeuroSDKCsharp.Json;
 using NeuroSDKCsharp.Websocket;
 using Newtonsoft.Json.Linq;
@@ -22,6 +24,8 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.Actions
 
         protected override Task Execute(string draftPlanObjectName)
         {
+            NeuroActionHandler.UnregisterActions(NeuroActionHandler.GetRegistered(new ChooseRoomAction().Name));
+
             Core.actionToTake = draftPlanObjectName;
 
             return Task.CompletedTask;
@@ -38,7 +42,16 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.Actions
                 case "1":
                 case "2":
                 case "3":
-                    draftPlanObjectName = "DRAFT PLAN " + choice; 
+                    draftPlanObjectName = "DRAFT PLAN " + choice;
+
+                    if (GridFSMManager.TargetRank() == null || GridFSMManager.TargetTile() == null)
+                    {
+                        Melon<Core>.Logger.Error($"Could not obtain the draft's target rank or tile while adding the picked room!");
+                    } else
+                    {
+                        GridFSMManager.Set((int)GridFSMManager.TargetRank(), (int)GridFSMManager.TargetTile(), DraftManager.pickedRooms[Int16.Parse(choice) - 1]);
+                    }
+                        
                     break;
                 case null:
                     draftPlanObjectName = "";

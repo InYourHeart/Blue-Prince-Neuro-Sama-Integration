@@ -1,67 +1,122 @@
-﻿using MelonLoader;
+﻿using Blue_Prince_Neuro_Sama_Integration_Mod.Managers;
+using MelonLoader;
 
 namespace Blue_Prince_Neuro_Sama_Integration_Mod.Rooms
 {
     public class DoorLayout
     {
-        public Door north;
-        public Door east;
-        public Door south;
-        public Door west;
+        public Door northDoor;
+        public Door eastDoor;
+        public Door southDoor;
+        public Door westDoor;
 
         //Rotation increments by 1 for every 90 degrees of clockwise rotation
-        private DoorLayout(bool northDefault, bool eastDefault, bool westDefault, int rotation)
+        private DoorLayout(bool northDefault, bool eastDefault, bool westDefault, int totalRotation)
         {
-            this.north = northDefault;
-            this.east = eastDefault;
-            this.south = true; //Plans always have a south door
-            this.west = westDefault;
+            this.northDoor = new Door(northDefault, null, false, false);
+            this.eastDoor =  new Door(eastDefault, null, false, false);
+            this.southDoor = new Door(true,false,true,true); //Plans always have an entry door, which is south facing before taking rotation in consideration
+            this.westDoor = new Door(westDefault, null, false, false);
 
-            this.Rotate(rotation);
-        }
-
-        private void Rotate(int rotations)
-        {
-            if (rotations == 0)
+            int? draftDirection = GridFSMManager.CurrentDraftDirection();
+            if (draftDirection == null)
             {
-                return;
+                Melon<Core>.Logger.Error($"Draft direction was null, draft information might be incorrect!");
+            } else
+            {
+                int draftRotations = ((int)draftDirection / 90);
+                int planRotations = totalRotation - draftRotations;
+
+                this.RotatePlan(planRotations);
+                this.RotateDraft(draftRotations);
             }
 
-            bool tempNorth = north;
+            Room[] neighbours = GridFSMManager.GetTargetNeighbours();
 
-            north = west;
-            west = south;
-            south = east;
-            east = tempNorth;
+            if (neighbours[0] != null) Melon<Core>.Logger.Msg($"North door - {neighbours[0].name} & {neighbours[0].doorLayout.southDoor.exists}");
+            if (neighbours[1] != null) Melon<Core>.Logger.Msg($"East door - {neighbours[1].name} & {neighbours[1].doorLayout.westDoor.exists}");
+            if (neighbours[2] != null) Melon<Core>.Logger.Msg($"South door - {neighbours[2].name} & {neighbours[2].doorLayout.northDoor.exists}");
+            if (neighbours[3] != null) Melon<Core>.Logger.Msg($"West door - {neighbours[3].name} & {neighbours[3].doorLayout.eastDoor.exists}");
 
-            Rotate(rotations - 1);
+            northDoor.isBlocked = neighbours[0] == null ? false : !neighbours[0].doorLayout.southDoor.exists;
+            eastDoor.isBlocked = neighbours[1] == null ? false : !neighbours[1].doorLayout.westDoor.exists;
+            southDoor.isBlocked = neighbours[2] == null ? false : !neighbours[2].doorLayout.northDoor.exists;
+            westDoor.isBlocked = neighbours[3] == null ? false : !neighbours[3].doorLayout.eastDoor.exists;
+        }
+
+        private void RotatePlan(int planRotations) {
+            if (planRotations == 0) return;
+
+            Door tempNorth = northDoor;
+
+            if (planRotations < 0)
+            {
+                northDoor = eastDoor;
+                eastDoor = southDoor;
+                southDoor = westDoor;
+                westDoor = tempNorth;
+
+                eastDoor.isEntry = false;
+                southDoor.isEntry = true;
+
+                RotatePlan(planRotations + 1);
+            }
+
+            if (planRotations > 0)
+            {
+                northDoor = westDoor;
+                westDoor = southDoor;
+                southDoor = eastDoor;
+                eastDoor = tempNorth;
+
+                westDoor.isEntry = false;
+                southDoor.isEntry = true;
+
+                RotatePlan(planRotations - 1);
+            }
+        }
+
+        private void RotateDraft(int draftRotations)
+        {
+            if (draftRotations == 0) return;
+
+            Door tempNorth = northDoor;
+
+            northDoor = westDoor;
+            westDoor = southDoor;
+            southDoor = eastDoor;
+            eastDoor = tempNorth;
+
+            RotateDraft(draftRotations - 1);
         }
 
         public string GetDraftingContext()
         {
-            if (!north && !east && !west) {
-                return " It does not have any doors.";
-            }
+            string draftingContext = " It has an unblocked door to the";
 
-            string draftingContext = " It has a door to the";
-
-            if (north) {
+            if (northDoor.exists && !northDoor.isEntry && !northDoor.isBlocked) {
                 draftingContext += " north,";
             }
 
-            if (east) {
+            if (eastDoor.exists && !eastDoor.isEntry && !eastDoor.isBlocked) {
                 draftingContext += " east,";
             }
 
-            if (west) {
+            if (westDoor.exists && !westDoor.isEntry && !westDoor.isBlocked) {
                 draftingContext += " west,";
             }
 
-            if (south){
+            if (southDoor.exists && !southDoor.isEntry && !southDoor.isBlocked)
+            {
                 draftingContext += " south,";
             }
-
+            
             int commaCount = draftingContext.Split(",").Length - 1;
+
+            if (commaCount < 1)
+            {
+                return " It does not have any doors.";
+            }
 
             //Remove the last comma
             draftingContext = draftingContext.Remove(draftingContext.LastIndexOf(","), 1).Insert(draftingContext.LastIndexOf(","), ".");
@@ -102,6 +157,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.Rooms
                 case "DARKROOM":
                 case "THRONE ROOM":
                 case "CLOSED EXHIBIT":
+                case "HALLWAY":
                     //Side only
                     return new DoorLayout(false, true, true ,rotation);
                 case "ENTRANCE HALL":
@@ -229,7 +285,6 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.Rooms
                     //East only
                     return new DoorLayout(false, true, false, rotation);
                 case "BOILER ROOM":
-                case "HALLWAY":
                     //North and west
                     return new DoorLayout(true, false, true, rotation);
             }

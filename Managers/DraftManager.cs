@@ -12,15 +12,10 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.Managers
 {
     public class DraftManager
     {
-        public static int pickedRoomSlots = 0;
+        public static int currentRoomSlot = 0;
         private volatile static string draftingContext = "";
 
-        public static Room firstRoom;
-        public static Room secondRoom;
-        public static Room thirdRoom;
-
-        public static int currentDraftRank;
-        public static int currentDraftWing;
+        public static Room[] pickedRooms = new Room[3];
 
         public static void AddPickedRoom(GameObject newRoom)
         {
@@ -46,118 +41,71 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.Managers
 
         public static void AddPickedRoom(PlayMakerFSM newRoom)
         {
-            pickedRoomSlots++;
+            pickedRooms[currentRoomSlot] = new Room(newRoom);
 
-            Room newRoomObject = new Room(newRoom);
-
-            switch (pickedRoomSlots)
-            {
-                case 1:
-                    firstRoom = newRoomObject;
-                    break;
-                case 2:
-                    secondRoom = newRoomObject;
-                    break;
-                case 3:
-                    thirdRoom = newRoomObject;
-                    break;
-            }
+            currentRoomSlot++;
         }
 
         public static void SendDraftingContext()
         {
+            UpdateDraftingContext(0);
             UpdateDraftingContext(1);
             UpdateDraftingContext(2);
-            UpdateDraftingContext(3);
 
-            ActionWindow.Create()
+            Context.Send(draftingContext, false);
+            NeuroActionHandler.RegisterActions(new ChooseRoomAction());
+
+            /*ActionWindow.Create()
                 .SetForce(5, "Three rooms have been picked for the draft, please choose one.", "", true, ForcePriority.Low)
                 .AddAction(new ChooseRoomAction())
                 .SetContext(draftingContext, false)
-                .Register();
+                .Register();*/
 
             draftingContext = "";
-            pickedRoomSlots = 0;
+            currentRoomSlot = 0;
         }
 
         private static void UpdateDraftingContext(int slot)
         {
-            Room newRoomObject;
-            switch (slot)
+            if (slot == 0)
             {
-                case 1:
-                    newRoomObject = firstRoom;
-                    break;
-                case 2:
-                    newRoomObject = secondRoom;
-                    break;
-                case 3:
-                    newRoomObject = thirdRoom;
-                    break;
-                default:
+                if (GridFSMManager.TargetRank() == null || GridFSMManager.TargetTile() == null)
+                {
+                    Melon<Core>.Logger.Error($"Could not obtain the draft's target rank or tile while building the information for slot " + slot + "!");
                     return;
-            }
+                }
 
-            if (slot == 1)
-            {
+                int targetRank = (int) GridFSMManager.TargetRank();
+                int targetTile = (int) GridFSMManager.TargetTile();
+
+                draftingContext += "A draft for Rank " + targetRank + ", Tile " + targetTile + " has begun.\n";
                 draftingContext += "The following three rooms have been pulled from the draft pool and may chosen from:\n";
             }
 
-            draftingContext += slot + ". " + newRoomObject.name + ". " + newRoomObject.rarity + " rarity.";
-            if (newRoomObject.effect != "")
+            draftingContext += (slot + 1) + ". " + pickedRooms[slot].name + ". " + pickedRooms[slot].rarity + " rarity.";
+            if (pickedRooms[slot].effect != "")
             {
-                draftingContext += " It has the following effect: " + newRoomObject.effect + ".";
+                draftingContext += " It has the following effect: " + pickedRooms[slot].effect + ".";
             }
-            draftingContext += " It is " + newRoomObject.types + ".";
-            if (newRoomObject.cost > 0)
+            draftingContext += " It is " + pickedRooms[slot].types + ".";
+            if (pickedRooms[slot].cost > 0)
             {
-                draftingContext += "It costs " + newRoomObject.cost + " gems to draft.";
+                draftingContext += "It costs " + pickedRooms[slot].cost + " gems to draft.";
             }
 
-            FsmInt roomRotation = GameObject.Find("PLAN MANAGEMENT").GetComponent<PlayMakerFSM>().FsmVariables.GetFsmInt("PLAN" + slot + " - ROTATION AMOUNT");
+            FsmInt roomRotation = GameObject.Find("PLAN MANAGEMENT").GetComponent<PlayMakerFSM>().FsmVariables.GetFsmInt("PLAN" + (slot + 1) + " - ROTATION AMOUNT");
             int rotation = roomRotation.value / 90;
 
-            Melon<Core>.Logger.Msg($"{roomRotation.value}");
-
-            draftingContext += DoorLayout.GetDoorLayout(newRoomObject.name, rotation).GetDraftingContext();
+            pickedRooms[slot].doorLayout = DoorLayout.GetDoorLayout(pickedRooms[slot].name, rotation);
+            
+            draftingContext += pickedRooms[slot].doorLayout.GetDraftingContext();
 
             draftingContext += "\n";
 
-            if (slot == 3)
+            if (slot == 2)
             {
                 draftingContext += InventoryManager.GetInventoryContext();
-
-                GridFSMManager.Initialize();
             }
-        }
-
-        public static void RegisterDraftActionWindow()
-        {
-            GameObject draftUIGameObject = GameObject.Find("DRAFT UI");
-            PlayMakerFSM draftUIfsm = draftUIGameObject.GetComponent<PlayMakerFSM>();
-
-            FsmState state;
-
-            do
-            {
-                state = draftUIfsm.fsm.activeState;
-                FsmStateAction lastAnimationAction = state.Actions[20];
-
-                if (!lastAnimationAction.Active)
-                {
-                    break;
-                }
-
-                Thread.Sleep(20);
-            } while (true);
-
-            ActionWindow.Create()
-                .SetForce(5, "Three rooms have been drafted, please choose one.", "", true, ForcePriority.Low)
-                .AddAction(new ChooseRoomAction())
-                .SetContext(draftingContext, false)
-                .Register();
-
-            draftingContext = "";
         }
     }
 }
