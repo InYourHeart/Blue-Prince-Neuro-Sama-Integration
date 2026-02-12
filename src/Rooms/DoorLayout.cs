@@ -1,4 +1,4 @@
-﻿using Blue_Prince_Neuro_Sama_Integration_Mod.Managers;
+﻿using Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers;
 using MelonLoader;
 
 namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Rooms

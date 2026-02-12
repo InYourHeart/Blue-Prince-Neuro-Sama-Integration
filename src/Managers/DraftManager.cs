@@ -1,4 +1,4 @@
-﻿using Blue_Prince_Neuro_Sama_Integration_Mod.Actions;
+﻿using Blue_Prince_Neuro_Sama_Integration_Mod.src.Actions;
 using Blue_Prince_Neuro_Sama_Integration_Mod.src.Rooms;
 using Il2Cpp;
 using Il2CppHutongGames.PlayMaker;
@@ -8,7 +8,7 @@ using NeuroSDKCsharp.Messages.Outgoing;
 using UnityEngine;
 using Room = Blue_Prince_Neuro_Sama_Integration_Mod.src.Rooms.Room;
 
-namespace Blue_Prince_Neuro_Sama_Integration_Mod.Managers
+namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
 {
     public class DraftManager
     {
@@ -55,12 +55,6 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.Managers
             Context.Send(draftingContext, false);
             NeuroActionHandler.RegisterActions(new ChooseRoomAction());
 
-            /*ActionWindow.Create()
-                .SetForce(5, "Three rooms have been picked for the draft, please choose one.", "", true, ForcePriority.Low)
-                .AddAction(new ChooseRoomAction())
-                .SetContext(draftingContext, false)
-                .Register();*/
-
             draftingContext = "";
             currentRoomSlot = 0;
         }
@@ -82,7 +76,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.Managers
                 draftingContext += "The following three rooms have been pulled from the draft pool and may chosen from:\n";
             }
 
-            draftingContext += (slot + 1) + ". " + pickedRooms[slot].name + ". " + pickedRooms[slot].rarity + " rarity.";
+            draftingContext += slot + 1 + ". " + pickedRooms[slot].name + ". " + pickedRooms[slot].rarity + " rarity.";
             if (pickedRooms[slot].effect != "")
             {
                 draftingContext += " It has the following effect: " + pickedRooms[slot].effect + ".";

@@ -1,10 +1,8 @@
-﻿using Blue_Prince_Neuro_Sama_Integration_Mod.Actions;
-using Blue_Prince_Neuro_Sama_Integration_Mod.Managers;
+﻿using Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers;
 using HarmonyLib;
 using Il2Cpp;
 using Il2CppBluePrince;
 using Il2CppHutongGames.PlayMaker;
-using Il2CppHutongGames.PlayMaker.Actions;
 using Il2CppTMPro;
 using MelonLoader;
 using NeuroSDKCsharp;

@@ -3,23 +3,23 @@ using MelonLoader;
 using UnityEngine;
 using Room = Blue_Prince_Neuro_Sama_Integration_Mod.src.Rooms.Room;
 
-namespace Blue_Prince_Neuro_Sama_Integration_Mod.Managers
+namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
 {
     public class GridFSMManager
     {
         private static int MAX_RANK = 9;
         private static int MIN_RANK = 1;
         private static int MAX_TILE = 5;
-        private static int MID_WING = 3;
+        private static int MID_TILE = 3;
         private static int MIN_TILE = 1;
 
         private static int MIN_GARAGE_RANK = 3;
 
         private static int ENTRANCE_HALL_RANK = 1;
-        private static int ENTRANCE_HALL_WING = 3;
+        private static int ENTRANCE_HALL_TILE = 3;
 
         private static int ANTECHAMBER_RANK = 9;
-        private static int ANTECHAMBER_WING = 3;
+        private static int ANTECHAMBER_TILE = 3;
 
         public static int NORTH_ANGLE = 0;
         public static int EAST_ANGLE = 90;
@@ -34,9 +34,6 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.Managers
         {
             GameObject gridObject = GameObject.Find("THE GRID");
             gridFSM = gridObject.GetComponent<PlayMakerFSM>();
-
-            //Set(ENTRANCE_HALL_RANK, ENTRANCE_HALL_WING, new Room("ENTRANCE HALL"));
-            //Set(ANTECHAMBER_RANK, ANTECHAMBER_WING, new Room("ANTECHAMBER"));
         }
 
         public static void Set(int rank, int tile, Room room)
@@ -54,25 +51,25 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.Managers
         public static Room[] GetCurrentNeighbours()
         {
             int rank = CurrentRank() == null ? ENTRANCE_HALL_RANK : (int) CurrentRank();
-            int wing = CurrentTile() == null ? ENTRANCE_HALL_WING : (int) CurrentTile();
+            int tile = CurrentTile() == null ? ENTRANCE_HALL_TILE : (int) CurrentTile();
 
-            return GetNeighbours(rank, wing);
+            return GetNeighbours(rank, tile);
         }
 
         public static Room[] GetTargetNeighbours() {
             int rank = TargetRank() == null ? -1 : (int) TargetRank();
-            int wing = TargetTile() == null ? -1 : (int) TargetTile();
+            int tile = TargetTile() == null ? -1 : (int) TargetTile();
 
-            if (rank == -1 || wing == -1) {
+            if (rank == -1 || tile == -1) {
                 Melon<Core>.Logger.Error("Could not get target's rank or tile!");
                 return new Room[3];
             }
 
-            return GetNeighbours(rank, wing);
+            return GetNeighbours(rank, tile);
         } 
 
         //Returns rooms neighbouring the tile in a North-East-South-West order
-        private static Room[] GetNeighbours(int rank, int wing)
+        private static Room[] GetNeighbours(int rank, int tile)
         {
             Room northRoom = null;
             Room eastRoom = null;
@@ -81,42 +78,42 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.Managers
 
             //Northern room
             //No northern rooms at rank 9 outside of room 46.
-            if (rank == MAX_RANK && wing == MID_WING)
+            if (rank == ANTECHAMBER_RANK && tile == ANTECHAMBER_TILE)
             {
                 //Might be spoilers?
                 northRoom = new Room("ROOM 46");
             }
             else if (rank < MAX_RANK)
             {
-                northRoom = Get(rank + 1, wing);
+                northRoom = Get(rank + 1, tile);
             }
 
             //Eastern room
-            if (wing < MAX_TILE)
+            if (tile < MAX_TILE)
             {
-                eastRoom = Get(rank, wing + 1);
+                eastRoom = Get(rank, tile + 1);
             }
 
             //Southern room
             //Connection to the grounds from the Entrance Hall
-            if (rank == MIN_RANK && wing == MID_WING)
+            if (rank == MIN_RANK && tile == MID_TILE)
             {
                 //TODO Figure out how to include the grounds
             }
             else if (rank > MIN_RANK)
             {
-                southRoom = Get(rank - 1, wing);
+                southRoom = Get(rank - 1, tile);
             }
 
             //Western room
             //Garage
-            if (rank > MIN_GARAGE_RANK && rank < MAX_RANK && wing == MIN_TILE)
+            if (rank > MIN_GARAGE_RANK && rank < MAX_RANK && tile == MIN_TILE)
             {
                 //TODO Figure out how to include the west path
             }
-            else if (wing > MIN_TILE)
+            else if (tile > MIN_TILE)
             {
-                westRoom = Get(rank, wing - 1);
+                westRoom = Get(rank, tile - 1);
             }
 
             return new Room[] { northRoom, eastRoom, southRoom, westRoom };
@@ -145,7 +142,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.Managers
             }
         }
 
-        private static string? GetFsmString(string name)
+        private static string GetFsmString(string name)
         {
             try
             {
@@ -177,22 +174,22 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.Managers
             return null;
         }
 
-        public static Room? GetCurrentNorth()
+        public static Room GetCurrentNorth()
         {
             return HouseLayout[CurrentRankHandlingNull(), CurrentTileHandlingNull() - 1];
         }
 
-        public static Room? GetCurrentSouth()
+        public static Room GetCurrentSouth()
         {
             return HouseLayout[CurrentRankHandlingNull() - 2, CurrentTileHandlingNull() - 1];
         }
 
-        public static Room? GetCurrentEast()
+        public static Room GetCurrentEast()
         {
             return HouseLayout[CurrentRankHandlingNull() - 1, CurrentTileHandlingNull()];
         }
 
-        public static Room? GetCurrentWest()
+        public static Room GetCurrentWest()
         {
             return HouseLayout[CurrentRankHandlingNull() - 1, CurrentTileHandlingNull() - 2];
         }
@@ -256,27 +253,27 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.Managers
             return GetFsmBool("NorthSouth");
         }
 
-        public static string? CurrentRoom()
+        public static string CurrentRoom()
         {
             return GetFsmString("CURRENT ROOM");
         }
 
-        public static string? EastDoor()
+        public static string EastDoor()
         {
             return GetFsmString("EastDoor");
         }
 
-        public static string? NorthDoor()
+        public static string NorthDoor()
         {
             return GetFsmString("NorthDoor");
         }
 
-        public static string? SouthDoor()
+        public static string SouthDoor()
         {
             return GetFsmString("SouthDoor");
         }
 
-        public static string? WestDoor()
+        public static string WestDoor()
         {
             return GetFsmString("WestDoor");
         }

@@ -1,12 +1,12 @@
-﻿using Blue_Prince_Neuro_Sama_Integration_Mod.Managers;
-using Blue_Prince_Neuro_Sama_Integration_Mod.src;
+﻿using Blue_Prince_Neuro_Sama_Integration_Mod.src;
+using Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers;
 using MelonLoader;
 using NeuroSDKCsharp.Actions;
 using NeuroSDKCsharp.Json;
 using NeuroSDKCsharp.Websocket;
 using Newtonsoft.Json.Linq;
 
-namespace Blue_Prince_Neuro_Sama_Integration_Mod.Actions
+namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Actions
 {
     public class ChooseRoomAction : NeuroAction<string>
     {
@@ -50,7 +50,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.Actions
                         Melon<Core>.Logger.Error($"Could not obtain the draft's target rank or tile while adding the picked room!");
                     } else
                     {
-                        GridFSMManager.Set((int)GridFSMManager.TargetRank(), (int)GridFSMManager.TargetTile(), DraftManager.pickedRooms[Int16.Parse(choice) - 1]);
+                        GridFSMManager.Set((int)GridFSMManager.TargetRank(), (int)GridFSMManager.TargetTile(), DraftManager.pickedRooms[short.Parse(choice) - 1]);
                     }
                         
                     break;
