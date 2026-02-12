@@ -1,12 +1,12 @@
 ﻿using Blue_Prince_Neuro_Sama_Integration_Mod.Actions;
-using Blue_Prince_Neuro_Sama_Integration_Mod.Rooms;
+using Blue_Prince_Neuro_Sama_Integration_Mod.src.Rooms;
 using Il2Cpp;
 using Il2CppHutongGames.PlayMaker;
 using MelonLoader;
 using NeuroSDKCsharp.Actions;
 using NeuroSDKCsharp.Messages.Outgoing;
 using UnityEngine;
-using Room = Blue_Prince_Neuro_Sama_Integration_Mod.Rooms.Room;
+using Room = Blue_Prince_Neuro_Sama_Integration_Mod.src.Rooms.Room;
 
 namespace Blue_Prince_Neuro_Sama_Integration_Mod.Managers
 {

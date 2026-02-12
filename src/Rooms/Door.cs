@@ -1,4 +1,4 @@
-﻿namespace Blue_Prince_Neuro_Sama_Integration_Mod.Rooms
+﻿namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Rooms
 {
     public class Door
     {

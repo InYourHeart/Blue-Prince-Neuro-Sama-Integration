@@ -1,7 +1,7 @@
 ﻿using Il2CppTMPro;
 using UnityEngine;
 
-namespace Blue_Prince_Neuro_Sama_Integration_Mod.Managers
+namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
 {
     public class InventoryManager
     {

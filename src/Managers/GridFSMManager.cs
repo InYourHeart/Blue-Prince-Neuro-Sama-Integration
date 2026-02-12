@@ -1,7 +1,7 @@
 ﻿using Il2Cpp;
 using MelonLoader;
 using UnityEngine;
-using Room = Blue_Prince_Neuro_Sama_Integration_Mod.Rooms.Room;
+using Room = Blue_Prince_Neuro_Sama_Integration_Mod.src.Rooms.Room;
 
 namespace Blue_Prince_Neuro_Sama_Integration_Mod.Managers
 {

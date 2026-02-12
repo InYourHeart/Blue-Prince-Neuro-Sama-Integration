@@ -1,7 +1,7 @@
 ﻿using Blue_Prince_Neuro_Sama_Integration_Mod.Managers;
 using MelonLoader;
 
-namespace Blue_Prince_Neuro_Sama_Integration_Mod.Rooms
+namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Rooms
 {
     public class DoorLayout
     {
@@ -13,10 +13,10 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.Rooms
         //Rotation increments by 1 for every 90 degrees of clockwise rotation
         private DoorLayout(bool northDefault, bool eastDefault, bool westDefault, int totalRotation)
         {
-            this.northDoor = new Door(northDefault, null, false, false);
-            this.eastDoor =  new Door(eastDefault, null, false, false);
-            this.southDoor = new Door(true,false,true,true); //Plans always have an entry door, which is south facing before taking rotation in consideration
-            this.westDoor = new Door(westDefault, null, false, false);
+            northDoor = new Door(northDefault, null, false, false);
+            eastDoor =  new Door(eastDefault, null, false, false);
+            southDoor = new Door(true,false,true,true); //Plans always have an entry door, which is south facing before taking rotation in consideration
+            westDoor = new Door(westDefault, null, false, false);
 
             int? draftDirection = GridFSMManager.CurrentDraftDirection();
             if (draftDirection == null)
@@ -24,11 +24,11 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.Rooms
                 Melon<Core>.Logger.Error($"Draft direction was null, draft information might be incorrect!");
             } else
             {
-                int draftRotations = ((int)draftDirection / 90);
+                int draftRotations = (int)draftDirection / 90;
                 int planRotations = totalRotation - draftRotations;
 
-                this.RotatePlan(planRotations);
-                this.RotateDraft(draftRotations);
+                RotatePlan(planRotations);
+                RotateDraft(draftRotations);
             }
 
             Room[] neighbours = GridFSMManager.GetTargetNeighbours();

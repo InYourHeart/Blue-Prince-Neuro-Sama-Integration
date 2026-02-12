@@ -1,7 +1,7 @@
 ﻿using Il2Cpp;
 using UnityEngine;
 
-namespace Blue_Prince_Neuro_Sama_Integration_Mod.Rooms
+namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Rooms
 {
     public class Room
     {
@@ -521,7 +521,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.Rooms
                 types += "an Upgrade,";
             }
 
-            if ((fullTypeString).Contains("Addition"))
+            if (fullTypeString.Contains("Addition"))
             {
                 types += "an Addition,";
             }
