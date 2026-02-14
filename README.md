@@ -1,4 +1,4 @@
-# Blue-Prince-Neuro-Sama-Integration 
+# Blue Princess - A Blue Prince Neuro Sama Integration Mod
 
 This is a work in progress mod for the game [Blue Prince](https://www.blueprincegame.com/) that allows [Neuro-sama](https://www.twitch.tv/vedal987) to control various aspect of the game. 
 
