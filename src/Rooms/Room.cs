@@ -1,4 +1,5 @@
 ﻿using Il2Cpp;
+using MelonLoader;
 using UnityEngine;
 
 namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Rooms
@@ -16,7 +17,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Rooms
 
         public Room(string roomName)
         {
-            PlayMakerFSM fsm = GameObject.Find(name).GetComponent<PlayMakerFSM>();
+            PlayMakerFSM fsm = GameObject.Find(roomName).GetComponent<PlayMakerFSM>();
             Initialize(fsm);
         }
 
@@ -448,97 +449,97 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Rooms
 
             if (fullTypeString.Contains("Permanent"))
             {
-                types += "Permanent,";
+                types += " Permanent,";
             }
 
             if (fullTypeString.Contains("Mechanical"))
             {
-                types += "a Mechanical room,";
+                types += " a Mechanical room,";
             }
 
             if (fullTypeString.Contains("Spread"))
             {
-                types += "a Spread room,";
+                types += " a Spread room,";
             }
 
             if (fullTypeString.Contains("Puzzle"))
             {
-                types += "a Puzzle room,";
+                types += " a Puzzle room,";
             }
 
             if (fullTypeString.Contains("Entry"))
             {
-                types += "an Entry room,";
+                types += " an Entry room,";
             }
 
             if (fullTypeString.Contains("Blueprint"))
             {
-                types += "a Blueprint,";
+                types += " a Blueprint,";
             }
 
             if (fullTypeString.Contains("Hallway"))
             {
-                types += "a Hallway,";
+                types += " a Hallway,";
             }
 
             if (fullTypeString.Contains("Bedroom"))
             {
-                types += "a Bedroom,";
+                types += " a Bedroom,";
             }
 
             if (fullTypeString.Contains("Green Room"))
             {
-                types += "a Green Room,";
+                types += " a Green Room,";
             }
 
             if (fullTypeString.Contains("Red Room"))
             {
-                types += "a Red Room,";
+                types += " a Red Room,";
             }
 
             if (fullTypeString.Contains("Shop"))
             {
-                types += "a Shop,";
+                types += " a Shop,";
             }
 
             if (fullTypeString.Contains("Blackprint"))
             {
-                types += "a Blackprint,";
+                types += " a Blackprint,";
             }
 
             if (fullTypeString.Contains("Outer Room"))
             {
-                types += "an Outer Room,";
+                types += " an Outer Room,";
             }
 
             if (fullTypeString.Contains("Dead End"))
             {
-                types += "a Dead End,";
+                types += " a Dead End,";
             }
 
             if (fullTypeString.Contains("Upgrade"))
             {
-                types += "an Upgrade,";
+                types += " an Upgrade,";
             }
 
             if (fullTypeString.Contains("Addition"))
             {
-                types += "an Addition,";
+                types += " an Addition,";
             }
 
             if (fullTypeString.Contains("Tomorrow"))
             {
-                types += "a Tomorrow room,";
+                types += " a Tomorrow room,";
             }
 
             if (fullTypeString.Contains("Drafting"))
             {
-                types += "a Drafting room,";
+                types += " a Drafting room,";
             }
 
             if (fullTypeString.Contains("Objective"))
             {
-                types += "an Objective,";
+                types += " an Objective,";
             }
 
             int commaCount = types.Split(",").Length - 1;
@@ -555,7 +556,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Rooms
             //Replace the penultimate comma with an "and"
             if (commaCount > 1)
             {
-                types = types.Remove(types.LastIndexOf(","), 1).Insert(types.LastIndexOf(","), " and ");
+                types = types.Remove(types.LastIndexOf(","), 1).Insert(types.LastIndexOf(","), " and");
             }
 
             return types;

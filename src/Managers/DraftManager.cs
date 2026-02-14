@@ -12,61 +12,63 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
 {
     public class DraftManager
     {
-        public static int currentRoomSlot = 0;
-        private volatile static string draftingContext = "";
-
-        public static Room[] pickedRooms = new Room[3];
-
-        public static void AddPickedRoom(GameObject newRoom)
-        {
-            if (newRoom == null)
-            {
-                return;
-            }
-
-            PlayMakerFSM prefabFsm = newRoom.GetComponent<PlayMakerFSM>();
-            AddPickedRoom(prefabFsm);
-        }
-
-        public static void AddPickedRoom(RoomCard newRoom)
-        {
-            if (newRoom == null)
-            {
-                return;
-            }
-
-            PlayMakerFSM prefabFsm = GameObject.Find(newRoom.Template.Prefab.GetComponent<PlayMakerFSM>().name.ToUpper()).GetComponent<PlayMakerFSM>();
-            AddPickedRoom(prefabFsm);
-        }
-
-        public static void AddPickedRoom(PlayMakerFSM newRoom)
-        {
-            pickedRooms[currentRoomSlot] = new Room(newRoom);
-
-            currentRoomSlot++;
-        }
+        public static Room[] draftedRooms = new Room[3];
+        public static bool isDrafting = false;
 
         public static void SendDraftingContext()
         {
-            UpdateDraftingContext(0);
-            UpdateDraftingContext(1);
-            UpdateDraftingContext(2);
+            isDrafting = true;
+
+            string draftingContext = "";
+
+            draftingContext += UpdateDraftingContext("1");
+            draftingContext += UpdateDraftingContext("2");
+            draftingContext += UpdateDraftingContext("3");
 
             Context.Send(draftingContext, false);
             NeuroActionHandler.RegisterActions(new ChooseRoomAction());
-
-            draftingContext = "";
-            currentRoomSlot = 0;
         }
 
-        private static void UpdateDraftingContext(int slot)
+        private static Room GetDraftedRoom(string slot)
         {
-            if (slot == 0)
+            try
+            {
+                GameObject go = GameObject.Find("PLAN MANAGEMENT");
+                PlayMakerFSM fsm = go.GetComponent<PlayMakerFSM>();
+
+                Room room = new Room(fsm.FsmVariables.FindFsmGameObject("PLAN" + slot + " - ENGINE").value.GetComponent<PlayMakerFSM>());
+
+                FsmInt roomRotation = GameObject.Find("PLAN MANAGEMENT").GetComponent<PlayMakerFSM>().FsmVariables.GetFsmInt("PLAN" + slot + " - ROTATION AMOUNT");
+                int rotation = roomRotation.value / 90;
+
+                room.doorLayout = DoorLayout.GetDoorLayout(room.name, rotation);
+
+                draftedRooms[int.Parse(slot) - 1] = room;
+
+                return room;
+            } catch (Exception e)
+            {
+                Melon<Core>.Logger.Error($"Could not retrieve the Room object for slot " + slot + "!");
+                return null;
+            }
+        }
+
+        private static string UpdateDraftingContext(string slot)
+        {
+            Room roomInSlot = GetDraftedRoom(slot);
+
+            if (roomInSlot == null) {
+                return "";
+            }
+
+            string draftingContext = "";
+
+            if (slot.Equals("1"))
             {
                 if (GridFSMManager.TargetRank() == null || GridFSMManager.TargetTile() == null)
                 {
                     Melon<Core>.Logger.Error($"Could not obtain the draft's target rank or tile while building the information for slot " + slot + "!");
-                    return;
+                    return "";
                 }
 
                 int targetRank = (int) GridFSMManager.TargetRank();
@@ -76,30 +78,30 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
                 draftingContext += "The following three rooms have been pulled from the draft pool and may chosen from:\n";
             }
 
-            draftingContext += slot + 1 + ". " + pickedRooms[slot].name + ". " + pickedRooms[slot].rarity + " rarity.";
-            if (pickedRooms[slot].effect != "")
+            draftingContext += slot + ". " + roomInSlot.name + ". " + roomInSlot.rarity + " rarity.";
+            if (roomInSlot.effect != "")
             {
-                draftingContext += " It has the following effect: " + pickedRooms[slot].effect + ".";
+                draftingContext += " It has the following effect: " + roomInSlot.effect + ".";
             }
-            draftingContext += " It is " + pickedRooms[slot].types + ".";
-            if (pickedRooms[slot].cost > 0)
+            draftingContext += " It is" + roomInSlot.types + ".";
+            if (roomInSlot.cost > 0)
             {
-                draftingContext += "It costs " + pickedRooms[slot].cost + " gems to draft.";
+                draftingContext += "It costs " + roomInSlot.cost + " gems to draft.";
             }
-
-            FsmInt roomRotation = GameObject.Find("PLAN MANAGEMENT").GetComponent<PlayMakerFSM>().FsmVariables.GetFsmInt("PLAN" + (slot + 1) + " - ROTATION AMOUNT");
-            int rotation = roomRotation.value / 90;
-
-            pickedRooms[slot].doorLayout = DoorLayout.GetDoorLayout(pickedRooms[slot].name, rotation);
             
-            draftingContext += pickedRooms[slot].doorLayout.GetDraftingContext();
+            //Don't look for Outer Room's door layout
+            if (roomInSlot.types.IndexOf("Outer Room") == -1){
+                draftingContext += roomInSlot.doorLayout.GetDraftingContext();
+            }
 
             draftingContext += "\n";
 
-            if (slot == 2)
+            if (slot.Equals("3"))
             {
                 draftingContext += InventoryManager.GetInventoryContext();
             }
+
+            return draftingContext;
         }
     }
 }

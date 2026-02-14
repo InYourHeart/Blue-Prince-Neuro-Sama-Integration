@@ -33,11 +33,6 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Rooms
 
             Room[] neighbours = GridFSMManager.GetTargetNeighbours();
 
-            if (neighbours[0] != null) Melon<Core>.Logger.Msg($"North door - {neighbours[0].name} & {neighbours[0].doorLayout.southDoor.exists}");
-            if (neighbours[1] != null) Melon<Core>.Logger.Msg($"East door - {neighbours[1].name} & {neighbours[1].doorLayout.westDoor.exists}");
-            if (neighbours[2] != null) Melon<Core>.Logger.Msg($"South door - {neighbours[2].name} & {neighbours[2].doorLayout.northDoor.exists}");
-            if (neighbours[3] != null) Melon<Core>.Logger.Msg($"West door - {neighbours[3].name} & {neighbours[3].doorLayout.eastDoor.exists}");
-
             northDoor.isBlocked = neighbours[0] == null ? false : !neighbours[0].doorLayout.southDoor.exists;
             eastDoor.isBlocked = neighbours[1] == null ? false : !neighbours[1].doorLayout.westDoor.exists;
             southDoor.isBlocked = neighbours[2] == null ? false : !neighbours[2].doorLayout.northDoor.exists;

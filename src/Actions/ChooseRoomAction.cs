@@ -50,7 +50,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Actions
                         Melon<Core>.Logger.Error($"Could not obtain the draft's target rank or tile while adding the picked room!");
                     } else
                     {
-                        GridFSMManager.Set((int)GridFSMManager.TargetRank(), (int)GridFSMManager.TargetTile(), DraftManager.pickedRooms[short.Parse(choice) - 1]);
+                        GridFSMManager.Set((int)GridFSMManager.TargetRank(), (int)GridFSMManager.TargetTile(), DraftManager.draftedRooms[int.Parse(choice) - 1]);
                     }
                         
                     break;

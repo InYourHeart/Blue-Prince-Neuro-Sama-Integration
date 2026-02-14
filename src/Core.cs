@@ -55,22 +55,27 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod
 
                     UpdatePlayerLocationContext();
 
-                    if (DraftManager.currentRoomSlot == 3)
+                    if (GameObject.Find("DRAFT UI") != null && GameObject.Find("DRAFT UI").GetComponent<PlayMakerFSM>() != null)
                     {
                         GameObject gameObject = GameObject.Find("DRAFT UI");
                         PlayMakerFSM fsm = gameObject.GetComponent<PlayMakerFSM>();
 
                         foreach (FsmState state in fsm.FsmStates)
                         {
-                            if (state != null && state.active && state.name.Equals("Animate In 2"))
+                            if (state != null && state.active)
                             {
                                 //Checking for the third room plan's slide in animation to finish before sending the drafting context.
                                 //
                                 //Allows humans to see what is going on and prevents some race conditions that might
                                 // lock the player cam if the room plan was picked at the first possible moment
-                                if (!state.Actions[20].Active)
+                                if (state.name.Equals("Animate In 2") && !DraftManager.isDrafting && !state.Actions[20].Active)
                                 {
+                                    Melon<Core>.Logger.Msg($"Drafting started.");
                                     DraftManager.SendDraftingContext();
+                                } else if (state.name.Equals("Listener") && DraftManager.isDrafting)
+                                {
+                                    Melon<Core>.Logger.Msg($"Drafting ended.");
+                                    DraftManager.isDrafting = false;
                                 }
                             }
                         }
@@ -132,24 +137,6 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod
 
 
             Context.Send(contextMessage);
-        }
-
-        [HarmonyPatch(typeof(RoomDraftContext), "PickRoomFromSlot", new Type[] { typeof(int),typeof(RoomCostType),typeof(bool),typeof(bool),typeof(CardFilterDelegate) })]
-        private static class NormalDraftPatch
-        {
-            private static void Postfix(ref RoomCard __result)
-            {
-                DraftManager.AddPickedRoom(__result);
-            }
-        }
-
-        [HarmonyPatch(typeof(OuterDraftManager), "PickCurrentRoom")]
-        private static class OuterDraftPatch
-        {
-            private static void Postfix(ref GameObject __result)
-            {
-                DraftManager.AddPickedRoom(__result);
-            }
         }
 
         /// <summary>
