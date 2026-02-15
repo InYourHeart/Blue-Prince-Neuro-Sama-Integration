@@ -13,6 +13,8 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Rooms
         public string types { get; set; }
         public int cost { get; set; }
 
+        public bool isOuter { get; set; }
+
         public DoorLayout doorLayout { get; set; }
 
         public Room(string roomName)
@@ -33,6 +35,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Rooms
             effect = GetRoomEffect(fsm);
             types = GetRoomTypes(fsm);
             cost = GetCost(fsm);
+            isOuter = types.IndexOf("Outer Room") != -1;
         }
 
         private static string GetRoomName(PlayMakerFSM prefabFsm) {

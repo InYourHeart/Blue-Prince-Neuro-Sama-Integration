@@ -90,7 +90,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
             }
             
             //Don't look for Outer Room's door layout
-            if (roomInSlot.types.IndexOf("Outer Room") == -1){
+            if (!roomInSlot.isOuter){
                 draftingContext += roomInSlot.doorLayout.GetDraftingContext();
             }
 

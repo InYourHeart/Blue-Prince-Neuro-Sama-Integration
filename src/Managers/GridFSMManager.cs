@@ -1,5 +1,6 @@
 ﻿using Il2Cpp;
 using MelonLoader;
+using NeuroSDKCsharp.Messages.Outgoing;
 using UnityEngine;
 using Room = Blue_Prince_Neuro_Sama_Integration_Mod.src.Rooms.Room;
 
@@ -38,6 +39,8 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
 
         public static void Set(int rank, int tile, Room room)
         {
+            Context.Send("A " + room.name + " has been drafted into Rank " + rank + ", Tile" + tile, false);
+
             HouseLayout[rank - 1, tile - 1] = room;
         }
 
