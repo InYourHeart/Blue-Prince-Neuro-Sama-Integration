@@ -1,4 +1,5 @@
 ﻿using Il2Cpp;
+using Blue_Prince_Neuro_Sama_Integration_Mod.src.Utils;
 using MelonLoader;
 using NeuroSDKCsharp.Messages.Outgoing;
 using UnityEngine;
@@ -33,13 +34,12 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
 
         public static void Initialize()
         {
-            GameObject gridObject = GameObject.Find("THE GRID");
-            gridFSM = gridObject.GetComponent<PlayMakerFSM>();
+            gridFSM = FsmUtil.GetPlayMakerFSM("THE GRID");
         }
 
         public static void Set(int rank, int tile, Room room)
         {
-            Context.Send("A " + room.name + " has been drafted into Rank " + rank + ", Tile" + tile, false);
+            Context.Send("A " + room.name + " has been drafted into Rank " + rank + ", Tile " + tile, false);
 
             HouseLayout[rank - 1, tile - 1] = room;
         }
@@ -122,41 +122,6 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
             return new Room[] { northRoom, eastRoom, southRoom, westRoom };
         }
 
-        private static int? GetFsmInt(string name)
-        {
-            try
-            {
-                return gridFSM.FsmVariables.GetFsmInt(name).Value;
-            } catch (NullReferenceException)
-            {
-                return null;
-            }
-        }
-
-        private static bool? GetFsmBool(string name)
-        {
-            try
-            {
-                return gridFSM.FsmVariables.GetFsmBool(name).Value;
-            }
-            catch (NullReferenceException)
-            {
-                return null;
-            }
-        }
-
-        private static string GetFsmString(string name)
-        {
-            try
-            {
-                return gridFSM.FsmVariables.GetFsmString(name).Value;
-            }
-            catch (NullReferenceException)
-            {
-                return null;
-            }
-        }
-
         public static int? CurrentDraftDirection()
         {
             int currentRank = CurrentRankHandlingNull();
@@ -209,12 +174,12 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
 
         public static int? CurrentRank()
         {
-            return GetFsmInt("Current Rank");
+            return FsmUtil.GetFsmInt(gridFSM.name, "Current Rank");
         }
 
         public static int? CurrentTile()
         {
-            int? tile = GetFsmInt("Current Tile");
+            int? tile = FsmUtil.GetFsmInt(gridFSM.name, "Current Tile");
 
             return AbsoluteToRelativeTile(tile);
         }
@@ -241,44 +206,14 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
 
         public static int? TargetRank() {
             //This typo is the Blue Prince dev's. Lmao.
-            return GetFsmInt("Taret Rank");
+            return FsmUtil.GetFsmInt(gridFSM.name, "Taret Rank");
         }
 
         public static int? TargetTile()
         {
-            int? tile = GetFsmInt("Target Tile");
+            int? tile = FsmUtil.GetFsmInt(gridFSM.name, "Target Tile");
 
             return AbsoluteToRelativeTile(tile);
-        }
-
-        public static bool? NorthSouth()
-        {
-            return GetFsmBool("NorthSouth");
-        }
-
-        public static string CurrentRoom()
-        {
-            return GetFsmString("CURRENT ROOM");
-        }
-
-        public static string EastDoor()
-        {
-            return GetFsmString("EastDoor");
-        }
-
-        public static string NorthDoor()
-        {
-            return GetFsmString("NorthDoor");
-        }
-
-        public static string SouthDoor()
-        {
-            return GetFsmString("SouthDoor");
-        }
-
-        public static string WestDoor()
-        {
-            return GetFsmString("WestDoor");
         }
     }
 }

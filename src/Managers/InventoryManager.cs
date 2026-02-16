@@ -1,42 +1,32 @@
-﻿using Il2CppTMPro;
-using UnityEngine;
+﻿using Blue_Prince_Neuro_Sama_Integration_Mod.src.Utils;
 
 namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
 {
     public class InventoryManager
     {
-        public static string goldAmount = "0";
-        public static string keyAmount = "0";
-        public static string gemAmount = "0";
-        public static string stepAmount = "0";
+        public static string GetGold()
+        {
+            return FsmUtil.GetTextMeshProText("Gold #","0");
+        }
 
+        public static string GetKeys()
+        {
+            return FsmUtil.GetTextMeshProText("Key #","0");
+        }
+
+        public static string GetGems()
+        {
+            return FsmUtil.GetTextMeshProText("Gem #","0");
+        }
+
+        public static string GetSteps()
+        {
+            return FsmUtil.GetTextMeshProText("Steps #","0");
+        }
+        
         public static string GetInventoryContext()
         {
-            GameObject goldGameObject = GameObject.Find("Gold #");
-            if (goldGameObject != null)
-            {
-                goldAmount = goldGameObject.GetComponent<TextMeshPro>().text;
-            }
-
-            GameObject keyGameObject = GameObject.Find("Key #");
-            if (keyGameObject != null)
-            {
-                keyAmount = keyGameObject.GetComponent<TextMeshPro>().text;
-            }
-
-            GameObject gemGameObject = GameObject.Find("Gem #");
-            if (gemGameObject != null)
-            {
-                gemAmount = gemGameObject.GetComponent<TextMeshPro>().text;
-            }
-
-            GameObject stepsGameObject = GameObject.Find("Steps #");
-            if (stepsGameObject != null)
-            {
-                stepAmount = stepsGameObject.GetComponent<TextMeshPro>().text;
-            }
-
-            return "You currently have " + goldAmount + " gold, " + keyAmount + " key(s), " + gemAmount + " gem(s) and " + stepAmount + " steps.";
+            return "You currently have " + GetGold() + " gold, " + GetKeys() + " key(s), " + GetGems() + " gem(s) and " + GetSteps() + " steps.";
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers;
+using Blue_Prince_Neuro_Sama_Integration_Mod.src.Utils;
 using HarmonyLib;
 using Il2Cpp;
 using Il2CppBluePrince;
@@ -46,8 +47,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod
                 if (__instance != null) {
                     if (actionToTake.Contains("DRAFT PLAN"))
                     {
-                        GameObject gameObject = GameObject.Find(actionToTake);
-                        PlayMakerFSM fsm = gameObject.GetComponent<PlayMakerFSM>();
+                        PlayMakerFSM fsm = FsmUtil.GetPlayMakerFSM(actionToTake);
 
                         fsm.SendEvent("click");
                         actionToTake = "";
@@ -55,12 +55,11 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod
 
                     UpdatePlayerLocationContext();
 
-                    if (GameObject.Find("DRAFT UI") != null && GameObject.Find("DRAFT UI").GetComponent<PlayMakerFSM>() != null)
-                    {
-                        GameObject gameObject = GameObject.Find("DRAFT UI");
-                        PlayMakerFSM fsm = gameObject.GetComponent<PlayMakerFSM>();
+                    PlayMakerFSM draftUIfsm = FsmUtil.GetPlayMakerFSM("DRAFT UI");
 
-                        foreach (FsmState state in fsm.FsmStates)
+                    if (draftUIfsm != null)
+                    {
+                        foreach (FsmState state in draftUIfsm.FsmStates)
                         {
                             if (state != null && state.active)
                             {

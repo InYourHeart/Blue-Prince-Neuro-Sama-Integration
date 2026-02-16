@@ -1,6 +1,5 @@
 ﻿using Il2Cpp;
-using MelonLoader;
-using UnityEngine;
+using Blue_Prince_Neuro_Sama_Integration_Mod.src.Utils;
 
 namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Rooms
 {
@@ -19,16 +18,8 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Rooms
 
         public Room(string roomName)
         {
-            PlayMakerFSM fsm = GameObject.Find(roomName).GetComponent<PlayMakerFSM>();
-            Initialize(fsm);
-        }
+            PlayMakerFSM fsm = FsmUtil.GetPlayMakerFSM(FsmUtil.GetGameObject("PLAN MANAGEMENT", roomName).name);
 
-        public Room(PlayMakerFSM fsm) {
-            Initialize(fsm);
-        }
-
-        private void Initialize(PlayMakerFSM fsm)
-        {
             name = GetRoomName(fsm);
             description = GetRoomDescription(fsm);
             rarity = GetRoomRarity(fsm);

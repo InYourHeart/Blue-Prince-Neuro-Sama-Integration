@@ -1,7 +1,7 @@
 ﻿using Blue_Prince_Neuro_Sama_Integration_Mod.src.Actions;
 using Blue_Prince_Neuro_Sama_Integration_Mod.src.Rooms;
+using Blue_Prince_Neuro_Sama_Integration_Mod.src.Utils;
 using Il2Cpp;
-using Il2CppHutongGames.PlayMaker;
 using MelonLoader;
 using NeuroSDKCsharp.Actions;
 using NeuroSDKCsharp.Messages.Outgoing;
@@ -33,13 +33,10 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
         {
             try
             {
-                GameObject go = GameObject.Find("PLAN MANAGEMENT");
-                PlayMakerFSM fsm = go.GetComponent<PlayMakerFSM>();
+                Room room = new Room("PLAN" + slot + " - ENGINE");
 
-                Room room = new Room(fsm.FsmVariables.FindFsmGameObject("PLAN" + slot + " - ENGINE").value.GetComponent<PlayMakerFSM>());
-
-                FsmInt roomRotation = GameObject.Find("PLAN MANAGEMENT").GetComponent<PlayMakerFSM>().FsmVariables.GetFsmInt("PLAN" + slot + " - ROTATION AMOUNT");
-                int rotation = roomRotation.value / 90;
+                int? roomRotation = FsmUtil.GetFsmInt("PLAN MANAGEMENT", "PLAN" + slot + " - ROTATION AMOUNT");
+                int rotation = roomRotation == null ? 0 : (int) roomRotation / 90;
 
                 room.doorLayout = DoorLayout.GetDoorLayout(room.name, rotation);
 
@@ -86,7 +83,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
             draftingContext += " It is" + roomInSlot.types + ".";
             if (roomInSlot.cost > 0)
             {
-                draftingContext += "It costs " + roomInSlot.cost + " gems to draft.";
+                draftingContext += " It costs " + roomInSlot.cost + " gems to draft.";
             }
             
             //Don't look for Outer Room's door layout

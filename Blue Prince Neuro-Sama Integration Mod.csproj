@@ -360,6 +360,7 @@
 		<Compile Include="src\Rooms\Door.cs" />
 		<Compile Include="src\Rooms\DoorLayout.cs" />
 		<Compile Include="src\Rooms\Room.cs" />
+		<Compile Include="src\Utils\FsmUtil.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
