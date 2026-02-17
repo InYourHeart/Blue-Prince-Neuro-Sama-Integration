@@ -21,7 +21,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Rooms
             int? draftDirection = GridFSMManager.CurrentDraftDirection();
             if (draftDirection == null)
             {
-                Melon<Core>.Logger.Error($"Draft direction was null, draft information might be incorrect!");
+                Melon<Core>.Logger.Error($"Draft direction was null, either this is an Outer Room or draft information might be incorrect!");
             } else
             {
                 int draftRotations = (int)draftDirection / 90;
@@ -283,6 +283,8 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Rooms
                     //North and west
                     return new DoorLayout(true, false, true, rotation);
             }
+
+            Melon<Core>.Logger.Error($"Could not find DoorLayout for room {roomName}");
 
             return null;
         }

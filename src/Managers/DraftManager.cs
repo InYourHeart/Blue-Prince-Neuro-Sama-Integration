@@ -50,6 +50,11 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
             }
         }
 
+        public static bool IsHovelActive()
+        {
+            return FsmUtil.GetFsmBool("DRAFT UI","hovel") == null ? false : (bool) FsmUtil.GetFsmBool("DRAFT UI", "hovel");
+        }
+
         private static string UpdateDraftingContext(string slot)
         {
             Room roomInSlot = GetDraftedRoom(slot);
@@ -83,7 +88,10 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
             draftingContext += " It is" + roomInSlot.types + ".";
             if (roomInSlot.cost > 0)
             {
-                draftingContext += " It costs " + roomInSlot.cost + " gems to draft.";
+                int cost = (IsHovelActive() ? roomInSlot.cost * 3 : roomInSlot.cost);
+                string resource = (IsHovelActive() ? "steps" : "gems");
+
+                draftingContext += " It costs " + cost + " " + resource + " to draft.";
             }
             
             //Don't look for Outer Room's door layout

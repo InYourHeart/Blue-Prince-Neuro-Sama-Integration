@@ -41,6 +41,18 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Utils
             }
         }
 
+        public static bool? GetFsmBool(string gameObjectName, string variableName)
+        {
+            try
+            {
+                return GetPlayMakerFSM(gameObjectName).FsmVariables.GetFsmBool(variableName).value;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
         public static GameObject GetGameObject(string gameObjectName, string variableName)
         {
             try

@@ -1,6 +1,7 @@
 ﻿using Blue_Prince_Neuro_Sama_Integration_Mod.src;
 using Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers;
 using Blue_Prince_Neuro_Sama_Integration_Mod.src.Rooms;
+using Blue_Prince_Neuro_Sama_Integration_Mod.src.Utils;
 using MelonLoader;
 using NeuroSDKCsharp.Actions;
 using NeuroSDKCsharp.Json;
@@ -46,10 +47,20 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Actions
                 case "3":
                     Room chosenRoom = DraftManager.draftedRooms[int.Parse(choice) - 1];
 
-                    if (chosenRoom.cost > int.Parse(InventoryManager.GetGems()))
+                    if (!choice.Equals("1"))
                     {
-                        draftPlanObjectName = "";
-                        return ExecutionResult.Failure($"You do not have enough Gems to draft the {chosenRoom.name}. Try to pick a different option.");
+                        if (DraftManager.IsHovelActive())
+                        {
+                            if ((chosenRoom.cost * 3) > int.Parse(InventoryManager.GetSteps())){
+                                draftPlanObjectName = "";
+                                return ExecutionResult.Failure($"You do not have enough Steps to draft the {chosenRoom.name}. Try to pick a different option.");
+                            }
+                        }
+                        else if (chosenRoom.cost > int.Parse(InventoryManager.GetGems()))
+                        {
+                            draftPlanObjectName = "";
+                            return ExecutionResult.Failure($"You do not have enough Gems to draft the {chosenRoom.name}. Try to pick a different option.");
+                        }
                     }
 
                     draftPlanObjectName = "DRAFT PLAN " + choice;
