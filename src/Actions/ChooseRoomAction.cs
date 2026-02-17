@@ -1,5 +1,6 @@
 ﻿using Blue_Prince_Neuro_Sama_Integration_Mod.src;
 using Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers;
+using Blue_Prince_Neuro_Sama_Integration_Mod.src.Rooms;
 using MelonLoader;
 using NeuroSDKCsharp.Actions;
 using NeuroSDKCsharp.Json;
@@ -43,14 +44,22 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Actions
                 case "1":
                 case "2":
                 case "3":
+                    Room chosenRoom = DraftManager.draftedRooms[int.Parse(choice) - 1];
+
+                    if (chosenRoom.cost > int.Parse(InventoryManager.GetGems()))
+                    {
+                        draftPlanObjectName = "";
+                        return ExecutionResult.Failure($"You do not have enough Gems to draft the {chosenRoom.name}. Try to pick a different option.");
+                    }
+
                     draftPlanObjectName = "DRAFT PLAN " + choice;
 
                     if (GridFSMManager.TargetRank() == null || GridFSMManager.TargetTile() == null)
                     {
                         Melon<Core>.Logger.Error($"Could not obtain the draft's target rank or tile while adding the picked room!");
-                    } else if (!DraftManager.draftedRooms[int.Parse(choice) - 1].isOuter)
+                    } else if (!chosenRoom.isOuter)
                     {
-                        GridFSMManager.Set((int)GridFSMManager.TargetRank(), (int)GridFSMManager.TargetTile(), DraftManager.draftedRooms[int.Parse(choice) - 1]);
+                        GridFSMManager.Set((int)GridFSMManager.TargetRank(), (int)GridFSMManager.TargetTile(), chosenRoom);
                     }
                         
                     break;
