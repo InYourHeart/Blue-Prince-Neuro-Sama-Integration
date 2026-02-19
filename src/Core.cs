@@ -1,4 +1,5 @@
-﻿using Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers;
+﻿using Blue_Prince_Neuro_Sama_Integration_Mod.src.Actions;
+using Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers;
 using Blue_Prince_Neuro_Sama_Integration_Mod.src.Utils;
 using HarmonyLib;
 using Il2Cpp;
@@ -75,6 +76,12 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod
                                 {
                                     Melon<Core>.Logger.Msg($"Drafting ended.");
                                     DraftManager.isDrafting = false;
+
+                                    if (DraftManager.pickDraftActionActive)
+                                    {
+                                        NeuroActionHandler.UnregisterActions(NeuroActionHandler.GetRegistered(new ChooseRoomAction().Name));
+                                        DraftManager.pickDraftActionActive = false;
+                                    }
                                 }
                             }
                         }

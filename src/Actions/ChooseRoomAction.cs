@@ -28,6 +28,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Actions
         protected override Task Execute(string draftPlanObjectName)
         {
             NeuroActionHandler.UnregisterActions(NeuroActionHandler.GetRegistered(new ChooseRoomAction().Name));
+            DraftManager.pickDraftActionActive = false;
 
             Core.actionToTake = draftPlanObjectName;
 

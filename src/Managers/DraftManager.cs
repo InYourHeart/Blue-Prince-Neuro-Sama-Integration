@@ -14,6 +14,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
     {
         public static Room[] draftedRooms = new Room[3];
         public static bool isDrafting = false;
+        public static bool pickDraftActionActive = false;
 
         public static void SendDraftingContext()
         {
@@ -27,6 +28,8 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
 
             Context.Send(draftingContext, false);
             NeuroActionHandler.RegisterActions(new ChooseRoomAction());
+
+            pickDraftActionActive = true;
         }
 
         private static Room GetDraftedRoom(string slot)
@@ -43,7 +46,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
                 draftedRooms[int.Parse(slot) - 1] = room;
 
                 return room;
-            } catch (Exception e)
+            } catch (Exception)
             {
                 Melon<Core>.Logger.Error($"Could not retrieve the Room object for slot " + slot + "!");
                 return null;
