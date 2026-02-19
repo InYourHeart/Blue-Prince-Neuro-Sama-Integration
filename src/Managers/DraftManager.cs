@@ -67,6 +67,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
             }
 
             string draftingContext = "";
+            bool isArchived = FsmUtil.GetFsmInt("PLAN MANAGEMENT", "ArchivedPick") == int.Parse(slot);
 
             if (slot.Equals("1"))
             {
@@ -80,26 +81,36 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
                 int targetTile = (int) GridFSMManager.TargetTile();
 
                 draftingContext += "A draft for Rank " + targetRank + ", Tile " + targetTile + " has begun.\n";
-                draftingContext += "The following three rooms have been pulled from the draft pool and may chosen from:\n";
+                draftingContext += "The following three floor plans have been pulled from the draft pool and may chosen from:\n";
             }
 
-            draftingContext += slot + ". " + roomInSlot.name + ". " + roomInSlot.rarity + " rarity.";
-            if (roomInSlot.effect != "")
+            draftingContext += slot + ". ";
+                
+            if (isArchived)
             {
-                draftingContext += " It has the following effect: " + roomInSlot.effect + ".";
+                draftingContext += "An archived floor plan.";
+            } else
+            {
+                draftingContext += roomInSlot.name + ". " + roomInSlot.rarity + " rarity.";
+                if (roomInSlot.effect != "")
+                {
+                    draftingContext += " It has the following effect: " + roomInSlot.effect + ".";
+                }
+                draftingContext += " It is" + roomInSlot.types + ".";
+
+                //Don't look for Outer Room's door layout
+                if (!roomInSlot.isOuter)
+                {
+                    draftingContext += roomInSlot.doorLayout.GetDraftingContext();
+                }
             }
-            draftingContext += " It is" + roomInSlot.types + ".";
+
             if (roomInSlot.cost > 0)
             {
                 int cost = (IsHovelActive() ? roomInSlot.cost * 3 : roomInSlot.cost);
                 string resource = (IsHovelActive() ? "steps" : "gems");
 
                 draftingContext += " It costs " + cost + " " + resource + " to draft.";
-            }
-            
-            //Don't look for Outer Room's door layout
-            if (!roomInSlot.isOuter){
-                draftingContext += roomInSlot.doorLayout.GetDraftingContext();
             }
 
             draftingContext += "\n";
