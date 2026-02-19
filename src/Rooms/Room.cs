@@ -448,92 +448,92 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Rooms
 
             if (fullTypeString.Contains("Mechanical"))
             {
-                types += " a Mechanical room,";
+                types += " Mechanical,";
             }
 
             if (fullTypeString.Contains("Spread"))
             {
-                types += " a Spread room,";
+                types += " Spread,";
             }
 
             if (fullTypeString.Contains("Puzzle"))
             {
-                types += " a Puzzle room,";
+                types += " Puzzle,";
             }
 
             if (fullTypeString.Contains("Entry"))
             {
-                types += " an Entry room,";
+                types += " Entry,";
             }
 
             if (fullTypeString.Contains("Blueprint"))
             {
-                types += " a Blueprint,";
+                types += " Blueprint,";
             }
 
             if (fullTypeString.Contains("Hallway"))
             {
-                types += " a Hallway,";
+                types += " Hallway,";
             }
 
             if (fullTypeString.Contains("Bedroom"))
             {
-                types += " a Bedroom,";
+                types += " Bedroom,";
             }
 
             if (fullTypeString.Contains("Green Room"))
             {
-                types += " a Green Room,";
+                types += " Green Room,";
             }
 
             if (fullTypeString.Contains("Red Room"))
             {
-                types += " a Red Room,";
+                types += " Red Room,";
             }
 
             if (fullTypeString.Contains("Shop"))
             {
-                types += " a Shop,";
+                types += " Shop,";
             }
 
             if (fullTypeString.Contains("Blackprint"))
             {
-                types += " a Blackprint,";
+                types += " Blackprint,";
             }
 
             if (fullTypeString.Contains("Outer Room"))
             {
-                types += " an Outer Room,";
+                types += " Outer Room,";
             }
 
             if (fullTypeString.Contains("Dead End"))
             {
-                types += " a Dead End,";
+                types += " Dead End,";
             }
 
             if (fullTypeString.Contains("Upgrade"))
             {
-                types += " an Upgrade,";
+                types += " Upgrade,";
             }
 
             if (fullTypeString.Contains("Addition"))
             {
-                types += " an Addition,";
+                types += " Addition,";
             }
 
             if (fullTypeString.Contains("Tomorrow"))
             {
-                types += " a Tomorrow room,";
+                types += " Tomorrow room,";
             }
 
             if (fullTypeString.Contains("Drafting"))
             {
-                types += " a Drafting room,";
+                types += " Drafting room,";
             }
 
             if (fullTypeString.Contains("Objective"))
             {
-                types += " an Objective,";
+                types += " Objective,";
             }
 
             int commaCount = types.Split(",").Length - 1;

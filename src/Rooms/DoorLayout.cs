@@ -87,7 +87,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Rooms
 
         public string GetDraftingContext()
         {
-            string draftingContext = " It has an unblocked door to the";
+            string draftingContext = "To its";
 
             if (northDoor.exists && !northDoor.isEntry && !northDoor.isBlocked) {
                 draftingContext += " north,";
@@ -110,7 +110,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Rooms
 
             if (commaCount < 1)
             {
-                return " It does not have any doors.";
+                return " None.";
             }
 
             //Remove the last comma

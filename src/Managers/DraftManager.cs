@@ -1,7 +1,6 @@
 ﻿using Blue_Prince_Neuro_Sama_Integration_Mod.src.Actions;
 using Blue_Prince_Neuro_Sama_Integration_Mod.src.Rooms;
 using Blue_Prince_Neuro_Sama_Integration_Mod.src.Utils;
-using Il2Cpp;
 using MelonLoader;
 using NeuroSDKCsharp.Actions;
 using NeuroSDKCsharp.Messages.Outgoing;
@@ -58,6 +57,89 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
             return FsmUtil.GetFsmBool("DRAFT UI","hovel") == null ? false : (bool) FsmUtil.GetFsmBool("DRAFT UI", "hovel");
         }
 
+        public static bool IsArchived(string slot)
+        {
+            return FsmUtil.GetFsmInt("PLAN MANAGEMENT", "ArchivedPick") == int.Parse(slot);
+        }
+
+        private static string StartingDraftContext(string slot)
+        {
+            if (GridFSMManager.TargetRank() == null || GridFSMManager.TargetTile() == null)
+            {
+                Melon<Core>.Logger.Error($"Could not obtain the draft's target rank or tile while building the starting draft text!");
+                return "";
+            }
+
+            int targetRank = (int)GridFSMManager.TargetRank();
+            int targetTile = (int)GridFSMManager.TargetTile();
+
+            return "A draft for Rank " + targetRank + ", Tile " + targetTile + " has begun.\n" +
+                    "The following three floor plans have been pulled from the draft pool and may chosen from:\n";
+        }
+
+        private static string SlotNumberContext(string slot)
+        {
+            return slot + ". ";
+        }
+        private static string ArchivedFloorPlanContext(Room roomInSlot)
+        {
+            return "An archived floor plan\n";
+        }
+
+        private static string FloorPlanContext(Room roomInSlot)
+        {
+            string floorPlanText = "";
+
+            floorPlanText += FloorPlanNameContext(roomInSlot);
+
+            floorPlanText += FloorPlanRarityContext(roomInSlot);
+
+            if (roomInSlot.effect != "")
+            {
+                floorPlanText += FloorPlanEffectContext(roomInSlot);
+            }
+
+            floorPlanText += FloorPlanTypesContext(roomInSlot);
+
+            //Don't look for Outer Room's door layout
+            if (!roomInSlot.isOuter)
+            {
+                floorPlanText += "\t* Unblocked doors: " + roomInSlot.doorLayout.GetDraftingContext() + "\n";
+            }
+
+            return floorPlanText;
+        }
+
+        private static string FloorPlanNameContext(Room roomInSlot)
+        {
+            return roomInSlot.name + "\n";
+        }
+
+        private static string FloorPlanRarityContext(Room roomInSlot)
+        {
+            return "\t* Rarity: " + roomInSlot.rarity + ";\n";
+        }
+
+        private static string FloorPlanEffectContext(Room roomInSlot)
+        {
+            return "\t* Effect: " + roomInSlot.effect + ";\n";
+        }
+
+        private static string FloorPlanTypesContext(Room roomInSlot)
+        {
+            return "\t* Type:" + roomInSlot.types + ";\n";
+        }
+
+        private static string FloorPlanCostContext(Room roomInSlot)
+        {
+            if (roomInSlot.cost <= 0) return "";
+
+            int cost = (IsHovelActive() ? roomInSlot.cost * 3 : roomInSlot.cost);
+            string resource = (IsHovelActive() ? "steps" : "gems");
+
+            return "\t* Cost: " + cost + " " + resource + ";\n";
+        }
+
         private static string UpdateDraftingContext(string slot)
         {
             Room roomInSlot = GetDraftedRoom(slot);
@@ -67,57 +149,32 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
             }
 
             string draftingContext = "";
-            bool isArchived = FsmUtil.GetFsmInt("PLAN MANAGEMENT", "ArchivedPick") == int.Parse(slot);
 
             if (slot.Equals("1"))
             {
-                if (GridFSMManager.TargetRank() == null || GridFSMManager.TargetTile() == null)
-                {
-                    Melon<Core>.Logger.Error($"Could not obtain the draft's target rank or tile while building the information for slot " + slot + "!");
-                    return "";
-                }
-
-                int targetRank = (int) GridFSMManager.TargetRank();
-                int targetTile = (int) GridFSMManager.TargetTile();
-
-                draftingContext += "A draft for Rank " + targetRank + ", Tile " + targetTile + " has begun.\n";
-                draftingContext += "The following three floor plans have been pulled from the draft pool and may chosen from:\n";
+                draftingContext += StartingDraftContext(slot);
             }
 
-            draftingContext += slot + ". ";
-                
-            if (isArchived)
+            draftingContext += SlotNumberContext(slot);
+
+            if (IsArchived(slot))
             {
-                draftingContext += "An archived floor plan.";
+                draftingContext += ArchivedFloorPlanContext(roomInSlot);
             } else
             {
-                draftingContext += roomInSlot.name + ". " + roomInSlot.rarity + " rarity.";
-                if (roomInSlot.effect != "")
-                {
-                    draftingContext += " It has the following effect: " + roomInSlot.effect + ".";
-                }
-                draftingContext += " It is" + roomInSlot.types + ".";
-
-                //Don't look for Outer Room's door layout
-                if (!roomInSlot.isOuter)
-                {
-                    draftingContext += roomInSlot.doorLayout.GetDraftingContext();
-                }
+                draftingContext += FloorPlanContext(roomInSlot);
             }
 
-            if (roomInSlot.cost > 0)
-            {
-                int cost = (IsHovelActive() ? roomInSlot.cost * 3 : roomInSlot.cost);
-                string resource = (IsHovelActive() ? "steps" : "gems");
+            draftingContext += FloorPlanCostContext(roomInSlot);
 
-                draftingContext += " It costs " + cost + " " + resource + " to draft.";
-            }
-
-            draftingContext += "\n";
 
             if (slot.Equals("3"))
             {
                 draftingContext += InventoryManager.GetInventoryContext();
+            }
+
+            if (draftingContext.LastIndexOf(";") != -1) {
+                draftingContext = draftingContext.Remove(draftingContext.LastIndexOf(";"), 1).Insert(draftingContext.LastIndexOf(";"), ".");
             }
 
             return draftingContext;
