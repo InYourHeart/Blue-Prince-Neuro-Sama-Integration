@@ -353,6 +353,7 @@
 
 	<ItemGroup>
 		<Compile Include="src\Actions\ChooseRoomAction.cs" />
+		<Compile Include="src\Managers\CoatCheckManager.cs" />
 		<Compile Include="src\Managers\DraftManager.cs" />
 		<Compile Include="src\Core.cs" />
 		<Compile Include="src\Managers\GridFSMManager.cs" />

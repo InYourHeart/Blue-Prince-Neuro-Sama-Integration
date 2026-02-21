@@ -165,8 +165,12 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
                 draftingContext += FloorPlanContext(roomInSlot);
             }
 
-            draftingContext += FloorPlanCostContext(roomInSlot);
+			if (roomInSlot.name.ToUpper().Equals("COAT CHECK"))
+			{
+				draftingContext += CoatCheckManager.GetCoatCheckContext(slot);
+			}
 
+            draftingContext += FloorPlanCostContext(roomInSlot);
 
             if (slot.Equals("3"))
             {
