@@ -13,25 +13,62 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
     {
         public static Room[] draftedRooms = new Room[3];
         public static bool isDrafting = false;
-        public static bool pickDraftActionActive = false;
+		public static bool isRedrawing = false;
 
-        public static void SendDraftingContext()
+
+		public static void StartRedraw()
+		{
+			Melon<Core>.Logger.Msg($"Redrawing started");
+
+			isRedrawing = true;
+
+			NeuroActionHandler.UnregisterActions(NeuroActionHandler.GetRegistered(new ChooseRoomAction().Name));
+		}
+
+		public static void EndRedraw()
+		{
+			Melon<Core>.Logger.Msg($"Redrawing ended");
+
+			SendDraftingContext();
+
+			isRedrawing = false;
+		}
+
+        public static void StartDraft()
         {
-            isDrafting = true;
+			Melon<Core>.Logger.Msg($"Drafting started.");
 
-            string draftingContext = "";
+			isDrafting = true;
 
-            draftingContext += UpdateDraftingContext("1");
-            draftingContext += UpdateDraftingContext("2");
-            draftingContext += UpdateDraftingContext("3");
-
-            Context.Send(draftingContext, false);
-            NeuroActionHandler.RegisterActions(new ChooseRoomAction());
-
-            pickDraftActionActive = true;
+			SendDraftingContext();
         }
 
-        private static Room GetDraftedRoom(string slot)
+		public static void EndDraft()
+		{
+			//Redundancy check just in case of a race condition. Call it the fool's semaphore
+			if (isDrafting)
+			{
+				Melon<Core>.Logger.Msg($"Drafting ended.");
+
+				isDrafting = false;
+
+				NeuroActionHandler.UnregisterActions(NeuroActionHandler.GetRegistered(new ChooseRoomAction().Name));
+			}
+		}
+
+		public static void SendDraftingContext()
+		{
+			string draftingContext = "";
+
+			draftingContext += UpdateDraftingContext("1");
+			draftingContext += UpdateDraftingContext("2");
+			draftingContext += UpdateDraftingContext("3");
+
+			Context.Send(draftingContext, false);
+			NeuroActionHandler.RegisterActions(new ChooseRoomAction());
+		}
+
+		private static Room GetDraftedRoom(string slot)
         {
             try
             {
@@ -62,7 +99,23 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
             return FsmUtil.GetFsmInt("PLAN MANAGEMENT", "ArchivedPick") == int.Parse(slot);
         }
 
-        private static string StartingDraftContext(string slot)
+		private static string StartingRedrawContext()
+		{
+			if (GridFSMManager.TargetRank() == null || GridFSMManager.TargetTile() == null)
+			{
+				Melon<Core>.Logger.Error($"Could not obtain the draft's target rank or tile while building the starting redraw text!");
+				return "";
+			}
+
+			int targetRank = (int)GridFSMManager.TargetRank();
+			int targetTile = (int)GridFSMManager.TargetTile();
+
+			return "A redraw for the draft for Rank " + targetRank + ", Tile " + targetTile + " has begun.\n" +
+					"The following three floor plans have been pulled from the draft pool and may chosen from:\n";
+		}
+
+
+		private static string StartingDraftContext()
         {
             if (GridFSMManager.TargetRank() == null || GridFSMManager.TargetTile() == null)
             {
@@ -77,7 +130,14 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
                     "The following three floor plans have been pulled from the draft pool and may chosen from:\n";
         }
 
-        private static string SlotNumberContext(string slot)
+		private static string StartingOuterDraftContext()
+		{
+			return "A draft for the Outer Room has begun.\n" +
+					"The following three floor plans have been pulled from the draft pool and may chosen from:\n";
+		}
+
+
+		private static string SlotNumberContext(string slot)
         {
             return slot + ". ";
         }
@@ -135,7 +195,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
             if (roomInSlot.cost <= 0) return "";
 
             int cost = (IsHovelActive() ? roomInSlot.cost * 3 : roomInSlot.cost);
-            string resource = (IsHovelActive() ? "steps" : "gems");
+            string resource = (IsHovelActive() ? "steps" : cost == 1 ? "gem" : "gems");
 
             return "\t* Cost: " + cost + " " + resource + ";\n";
         }
@@ -150,10 +210,19 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
 
             string draftingContext = "";
 
-            if (slot.Equals("1"))
-            {
-                draftingContext += StartingDraftContext(slot);
-            }
+			if (slot.Equals("1"))
+			{
+				if (roomInSlot.isOuter)
+				{
+					draftingContext += StartingOuterDraftContext();
+				} else if (isRedrawing)
+				{
+					draftingContext += StartingRedrawContext();
+				} else
+				{
+					draftingContext += StartingDraftContext();
+				}
+			}
 
             draftingContext += SlotNumberContext(slot);
 

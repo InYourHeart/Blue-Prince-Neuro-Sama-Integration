@@ -5,6 +5,7 @@ using HarmonyLib;
 using Il2Cpp;
 using Il2CppBluePrince;
 using Il2CppHutongGames.PlayMaker;
+using Il2CppHutongGames.PlayMaker.Actions;
 using Il2CppTMPro;
 using MelonLoader;
 using NeuroSDKCsharp;
@@ -52,40 +53,36 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod
 
                         fsm.SendEvent("click");
                         actionToTake = "";
-                    }
+					}
 
                     UpdatePlayerLocationContext();
 
-                    PlayMakerFSM draftUIfsm = FsmUtil.GetPlayMakerFSM("DRAFT UI");
+					//Checking for the third room plan's slide in animation to finish before sending the drafting context.
+					//
+					//Allows humans to see what is going on and prevents some race conditions that might
+					// lock the player cam if the room plan was picked at the first possible moment
+					FsmState draftingStartState = FsmUtil.GetFsmState("DRAFT UI", 7);
+					if (draftingStartState != null && draftingStartState.active && !DraftManager.isDrafting && !draftingStartState.Actions[20].Active) {
+						DraftManager.StartDraft();
+					}
 
-                    if (draftUIfsm != null)
-                    {
-                        foreach (FsmState state in draftUIfsm.FsmStates)
-                        {
-                            if (state != null && state.active)
-                            {
-                                //Checking for the third room plan's slide in animation to finish before sending the drafting context.
-                                //
-                                //Allows humans to see what is going on and prevents some race conditions that might
-                                // lock the player cam if the room plan was picked at the first possible moment
-                                if (state.name.Equals("Animate In 2") && !DraftManager.isDrafting && !state.Actions[20].Active)
-                                {
-                                    Melon<Core>.Logger.Msg($"Drafting started.");
-                                    DraftManager.SendDraftingContext();
-                                } else if (state.name.Equals("Listener") && DraftManager.isDrafting)
-                                {
-                                    Melon<Core>.Logger.Msg($"Drafting ended.");
-                                    DraftManager.isDrafting = false;
+					FsmState draftingEndState = FsmUtil.GetFsmState("DRAFT UI", 0);
+					if (draftingEndState != null && draftingEndState.active && DraftManager.isDrafting)
+					{
+						DraftManager.EndDraft();
+					}
 
-                                    if (DraftManager.pickDraftActionActive)
-                                    {
-                                        NeuroActionHandler.UnregisterActions(NeuroActionHandler.GetRegistered(new ChooseRoomAction().Name));
-                                        DraftManager.pickDraftActionActive = false;
-                                    }
-                                }
-                            }
-                        }
-                    }
+					FsmState redrawStartState = FsmUtil.GetFsmState("Draw New Floor Plans", 2);
+					if (redrawStartState != null && redrawStartState.active && !DraftManager.isRedrawing)
+					{
+						DraftManager.StartRedraw();
+					}
+
+					FsmState redrawEndState = FsmUtil.GetFsmState("Draw New Floor Plans", 3);
+					if (redrawEndState != null && redrawEndState.active && DraftManager.isRedrawing)
+					{
+						DraftManager.EndRedraw();
+					}
                 }
             }
         }

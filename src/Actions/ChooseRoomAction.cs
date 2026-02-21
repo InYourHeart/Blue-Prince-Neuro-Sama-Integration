@@ -13,7 +13,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Actions
     public class ChooseRoomAction : NeuroAction<string>
     {
         public override string Name => "pick_draft_option";
-        protected override string Description => "Choose one of the three rooms to draft.";
+        protected override string Description => "Choose one of the three floor plans to draft.";
 
         protected override JsonSchema Schema => new()
         {
@@ -27,10 +27,9 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Actions
 
         protected override Task Execute(string draftPlanObjectName)
         {
-            NeuroActionHandler.UnregisterActions(NeuroActionHandler.GetRegistered(new ChooseRoomAction().Name));
-            DraftManager.pickDraftActionActive = false;
+			DraftManager.EndDraft();
 
-            Core.actionToTake = draftPlanObjectName;
+			Core.actionToTake = draftPlanObjectName;
 
             return Task.CompletedTask;
         }
@@ -95,7 +94,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Actions
 
             }
 
-            return ExecutionResult.Success();
+			return ExecutionResult.Success();
         }
     }
 }
