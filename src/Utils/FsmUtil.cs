@@ -55,7 +55,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Utils
             }
         }
 
-        public static GameObject GetGameObject(string gameObjectName, string variableName)
+		public static GameObject GetGameObject(string gameObjectName, string variableName)
         {
             try
             {
@@ -67,7 +67,19 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Utils
             }
         }
 
-        public static PlayMakerFSM GetPlayMakerFSM(string gameObjectName) {
+		public static PlayMakerFSM GetChildPlayMakerFSM(string gameObjectName, string childObjectName)
+		{
+			try
+			{
+				return GameObject.Find(gameObjectName).transform.GetChild(0).gameObject.GetComponent<PlayMakerFSM>();
+			}
+			catch (Exception)
+			{
+				return null;
+			}
+		}
+
+		public static PlayMakerFSM GetPlayMakerFSM(string gameObjectName) {
             try
             {
                 return GameObject.Find(gameObjectName).GetComponent<PlayMakerFSM>();

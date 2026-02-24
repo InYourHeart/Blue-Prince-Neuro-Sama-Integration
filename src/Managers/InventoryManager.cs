@@ -23,10 +23,20 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
         {
             return FsmUtil.GetTextMeshProText("Steps #","0");
         }
+
+		public static string GetIvoryDice()
+		{
+			return FsmUtil.GetTextMeshProText("Bone #", "0");
+		}
         
         public static string GetInventoryContext()
         {
-            return "You currently have " + GetGold() + " gold, " + GetKeys() + " key(s), " + GetGems() + " gem(s) and " + GetSteps() + " steps.";
+			return "You currently have "
+				+ GetIvoryDice() + " ivory dice, "
+				+ GetGold() + " gold, " 
+				+ GetKeys() + " key(s), " 
+				+ GetGems() + " gem(s) and " 
+				+ GetSteps() + " steps.";
         }
 
 		public static string GetItemByID(int id)

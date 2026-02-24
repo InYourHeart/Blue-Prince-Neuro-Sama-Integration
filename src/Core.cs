@@ -53,9 +53,22 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod
 
                         fsm.SendEvent("click");
                         actionToTake = "";
+					} else
+					{
+						switch (actionToTake)
+						{
+							case "REDRAW_IVORY_DICE":
+								PlayMakerFSM fsm = FsmUtil.GetChildPlayMakerFSM("DICE (slot x)", "CLICK fsm");
+
+								fsm.SendEvent("click");
+								actionToTake = "";
+								break;
+							default:
+								break;
+						}
 					}
 
-                    UpdatePlayerLocationContext();
+					UpdatePlayerLocationContext();
 
 					//Checking for the third room plan's slide in animation to finish before sending the drafting context.
 					//

@@ -4,7 +4,6 @@ using Blue_Prince_Neuro_Sama_Integration_Mod.src.Utils;
 using MelonLoader;
 using NeuroSDKCsharp.Actions;
 using NeuroSDKCsharp.Messages.Outgoing;
-using UnityEngine;
 using Room = Blue_Prince_Neuro_Sama_Integration_Mod.src.Rooms.Room;
 
 namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
@@ -15,14 +14,18 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
         public static bool isDrafting = false;
 		public static bool isRedrawing = false;
 
+		private static List<INeuroAction> actions = new List<INeuroAction>();
 
 		public static void StartRedraw()
 		{
-			Melon<Core>.Logger.Msg($"Redrawing started");
+			if (!isRedrawing)
+			{
+				Melon<Core>.Logger.Msg($"Redrawing started");
 
-			isRedrawing = true;
+				isRedrawing = true;
 
-			NeuroActionHandler.UnregisterActions(NeuroActionHandler.GetRegistered(new ChooseRoomAction().Name));
+				UnregisterActions();
+			}
 		}
 
 		public static void EndRedraw()
@@ -52,8 +55,14 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
 
 				isDrafting = false;
 
-				NeuroActionHandler.UnregisterActions(NeuroActionHandler.GetRegistered(new ChooseRoomAction().Name));
+				UnregisterActions();
 			}
+		}
+
+		public static void UnregisterActions()
+		{
+			NeuroActionHandler.UnregisterActions(actions);
+			actions.Clear();
 		}
 
 		public static void SendDraftingContext()
@@ -64,8 +73,14 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
 			draftingContext += UpdateDraftingContext("2");
 			draftingContext += UpdateDraftingContext("3");
 
+			actions.Add(new ChooseRoomAction());
+			if (!InventoryManager.GetIvoryDice().Equals("0"))
+			{
+				actions.Add(new RedrawWithIvoryDiceAction());
+			}
+
 			Context.Send(draftingContext, false);
-			NeuroActionHandler.RegisterActions(new ChooseRoomAction());
+			NeuroActionHandler.RegisterActions(actions);
 		}
 
 		private static Room GetDraftedRoom(string slot)
