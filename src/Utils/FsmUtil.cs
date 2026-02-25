@@ -67,16 +67,33 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Utils
             }
         }
 
-		public static PlayMakerFSM GetChildPlayMakerFSM(string gameObjectName, string childObjectName)
+		public static GameObject GetChildGameObject(string parentName, string childName)
 		{
 			try
 			{
-				return GameObject.Find(gameObjectName).transform.GetChild(0).gameObject.GetComponent<PlayMakerFSM>();
+				Transform parentTransform = GameObject.Find(parentName).transform;
+
+				for (int i = 0; i < parentTransform.childCount; i++)
+				{
+					GameObject child = parentTransform.GetChild(i).gameObject;
+
+					if (child.name == childName) return child;
+				}
 			}
-			catch (Exception)
+			catch {}
+
+			return null;
+		}
+
+		public static PlayMakerFSM GetChildPlayMakerFSM(string parentName, string childName)
+		{
+			try
 			{
-				return null;
+				return GetChildGameObject(parentName, childName).GetComponent<PlayMakerFSM>();
 			}
+			catch {}
+
+			return null;
 		}
 
 		public static PlayMakerFSM GetPlayMakerFSM(string gameObjectName) {

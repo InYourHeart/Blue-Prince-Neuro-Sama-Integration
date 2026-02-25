@@ -46,26 +46,24 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod
         {
             private static void Postfix(BluePrinceManager __instance)
             {
-                if (__instance != null) {
-                    if (actionToTake.Contains("DRAFT PLAN"))
-                    {
-                        PlayMakerFSM fsm = FsmUtil.GetPlayMakerFSM(actionToTake);
+				try
+				{
+					if (__instance == null) return;
 
-                        fsm.SendEvent("click");
-                        actionToTake = "";
-					} else
+					if (actionToTake.Contains("DRAFT PLAN"))
 					{
-						switch (actionToTake)
-						{
-							case "REDRAW_IVORY_DICE":
-								PlayMakerFSM fsm = FsmUtil.GetChildPlayMakerFSM("DICE (slot x)", "CLICK fsm");
+						PlayMakerFSM fsm = FsmUtil.GetPlayMakerFSM(actionToTake);
 
-								fsm.SendEvent("click");
-								actionToTake = "";
-								break;
-							default:
-								break;
-						}
+						fsm.SendEvent("click");
+					}
+
+					if (actionToTake.Contains(RedrawAction.REDRAW_FLAG))
+					{
+						string redrawObjectName = actionToTake.Substring(RedrawAction.REDRAW_FLAG.Length);
+
+						PlayMakerFSM fsm = FsmUtil.GetChildPlayMakerFSM(redrawObjectName, "CLICK fsm");
+
+						fsm.SendEvent("click");
 					}
 
 					UpdatePlayerLocationContext();
@@ -75,7 +73,8 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod
 					//Allows humans to see what is going on and prevents some race conditions that might
 					// lock the player cam if the room plan was picked at the first possible moment
 					FsmState draftingStartState = FsmUtil.GetFsmState("DRAFT UI", 7);
-					if (draftingStartState != null && draftingStartState.active && !DraftManager.isDrafting && !draftingStartState.Actions[20].Active) {
+					if (draftingStartState != null && draftingStartState.active && !DraftManager.isDrafting && !draftingStartState.Actions[20].Active)
+					{
 						DraftManager.StartDraft();
 					}
 
@@ -96,7 +95,15 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod
 					{
 						DraftManager.EndRedraw();
 					}
-                }
+				}
+				catch (Exception e)
+				{
+					Melon<Core>.Logger.Error(e.Message);
+				} 
+				finally
+				{
+					actionToTake = "";
+				}
             }
         }
 

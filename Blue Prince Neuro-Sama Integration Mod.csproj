@@ -353,6 +353,13 @@
 
 	<ItemGroup>
 		<Compile Include="src\Actions\ChooseRoomAction.cs" />
+		<Compile Include="src\Actions\RedrawAction.cs" />
+		<Compile Include="src\Actions\RedrawInkwellAction.cs" />
+		<Compile Include="src\Actions\RedrawDrawingAction.cs" />
+		<Compile Include="src\Actions\RedrawStudyAction.cs" />
+		<Compile Include="src\Actions\RedrawCrownAction.cs" />
+		<Compile Include="src\Actions\RedrawRookAction.cs" />
+		<Compile Include="src\Actions\RedrawClassAction.cs" />
 		<Compile Include="src\Actions\RedrawWithIvoryDiceAction.cs" />
 		<Compile Include="src\Managers\CoatCheckManager.cs" />
 		<Compile Include="src\Managers\DraftManager.cs" />

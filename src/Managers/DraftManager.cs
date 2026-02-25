@@ -4,6 +4,7 @@ using Blue_Prince_Neuro_Sama_Integration_Mod.src.Utils;
 using MelonLoader;
 using NeuroSDKCsharp.Actions;
 using NeuroSDKCsharp.Messages.Outgoing;
+using UnityEngine;
 using Room = Blue_Prince_Neuro_Sama_Integration_Mod.src.Rooms.Room;
 
 namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
@@ -74,13 +75,27 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
 			draftingContext += UpdateDraftingContext("3");
 
 			actions.Add(new ChooseRoomAction());
-			if (!InventoryManager.GetIvoryDice().Equals("0"))
-			{
-				actions.Add(new RedrawWithIvoryDiceAction());
-			}
 
+			//TODO Crown of the Blueprints is handled differently
+			AddRedrawAction(new RedrawClassAction());
+			AddRedrawAction(new RedrawCrownAction());
+			AddRedrawAction(new RedrawDrawingAction());
+			AddRedrawAction(new RedrawInkwellAction());
+			AddRedrawAction(new RedrawRookAction());
+			AddRedrawAction(new RedrawStudyAction());
+			if (!InventoryManager.GetIvoryDice().Equals("0")) actions.Add(new RedrawWithIvoryDiceAction());
+			
 			Context.Send(draftingContext, false);
 			NeuroActionHandler.RegisterActions(actions);
+		}
+
+		private static void AddRedrawAction(RedrawAction action)
+		{
+			GameObject textObject = FsmUtil.GetChildGameObject(action.GAME_OBJECT_NAME, "TEXT");
+
+			if (textObject != null && textObject.gameObject.active) {
+				actions.Add(action);
+			}
 		}
 
 		private static Room GetDraftedRoom(string slot)
