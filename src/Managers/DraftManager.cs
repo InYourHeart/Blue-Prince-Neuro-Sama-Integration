@@ -15,6 +15,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
         public static bool isDrafting = false;
 		public static bool isRedrawing = false;
 		public static bool isRotating = false;
+		public static bool isFailedRotation = false;
 
 		private static List<INeuroAction> actions = new List<INeuroAction>();
 
@@ -25,8 +26,6 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
 				Melon<Core>.Logger.Msg($"Rotation started");
 
 				isRotating = true;
-
-				UnregisterActions();
 			}
 		}
 
@@ -35,8 +34,28 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
 			Melon<Core>.Logger.Msg($"Rotation ended");
 
 			SendDraftingContext();
+			RegisterActions();
 
 			isRotating = false;
+			isFailedRotation = false;
+		}
+
+		public static void StartFailRotation()
+		{
+			Melon<Core>.Logger.Msg($"Rotation fail start");
+
+			Context.Send("Rotation failed because none of the floor plans can be rotated. The draft remains the same.", false);
+
+			isFailedRotation = true;
+		}
+
+		public static void EndFailRotation()
+		{
+			Melon<Core>.Logger.Msg($"Rotation fail end");
+
+			isFailedRotation = false;
+
+			RegisterActions();
 		}
 
 		public static void StartRedraw()
@@ -46,8 +65,6 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
 				Melon<Core>.Logger.Msg($"Redrawing started");
 
 				isRedrawing = true;
-
-				UnregisterActions();
 			}
 		}
 
@@ -56,6 +73,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
 			Melon<Core>.Logger.Msg($"Redrawing ended");
 
 			SendDraftingContext();
+			RegisterActions();
 
 			isRedrawing = false;
 		}
@@ -67,7 +85,8 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
 			isDrafting = true;
 
 			SendDraftingContext();
-        }
+			RegisterActions();
+		}
 
 		public static void EndDraft()
 		{
@@ -77,8 +96,6 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
 				Melon<Core>.Logger.Msg($"Drafting ended.");
 
 				isDrafting = false;
-
-				UnregisterActions();
 			}
 		}
 
@@ -88,14 +105,8 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
 			actions.Clear();
 		}
 
-		public static void SendDraftingContext()
+		public static void RegisterActions()
 		{
-			string draftingContext = "";
-
-			draftingContext += UpdateDraftingContext("1");
-			draftingContext += UpdateDraftingContext("2");
-			draftingContext += UpdateDraftingContext("3");
-
 			actions.Add(new ChooseRoomAction());
 
 			//TODO Crown of the Blueprints is handled differently
@@ -113,9 +124,19 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
 			AddDraftingAbility(new CronographAction());
 			AddDraftingAbility(new KnightsShieldAction());
 			if (!InventoryManager.GetIvoryDice().Equals("0")) actions.Add(new RedrawIvoryDiceAction());
-			
-			Context.Send(draftingContext, false);
+
 			NeuroActionHandler.RegisterActions(actions);
+		}
+
+		public static void SendDraftingContext()
+		{
+			string draftingContext = "";
+
+			draftingContext += UpdateDraftingContext("1");
+			draftingContext += UpdateDraftingContext("2");
+			draftingContext += UpdateDraftingContext("3");
+
+			Context.Send(draftingContext, false);
 		}
 
 		private static void AddDraftingAbility(DraftingAbilityAction action)

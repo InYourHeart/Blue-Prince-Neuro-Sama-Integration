@@ -118,6 +118,15 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod
 					{
 						DraftManager.EndRotation();
 					}
+
+					GameObject rotationErrorGameObject = GameObject.Find("ROTATION ERROR POPUP");
+					if (!DraftManager.isFailedRotation && rotationErrorGameObject != null)
+					{
+						DraftManager.StartFailRotation();
+					} else if (DraftManager.isFailedRotation && rotationErrorGameObject == null)
+					{
+						DraftManager.EndFailRotation();
+					}
 				}
 				catch (Exception e)
 				{

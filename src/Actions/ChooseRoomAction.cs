@@ -94,6 +94,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Actions
 
             }
 
+			DraftManager.UnregisterActions();
 			return ExecutionResult.Success();
         }
     }
