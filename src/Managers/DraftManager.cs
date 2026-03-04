@@ -14,8 +14,30 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
         public static Room[] draftedRooms = new Room[3];
         public static bool isDrafting = false;
 		public static bool isRedrawing = false;
+		public static bool isRotating = false;
 
 		private static List<INeuroAction> actions = new List<INeuroAction>();
+
+		public static void StartRotation()
+		{
+			if (!isRotating)
+			{
+				Melon<Core>.Logger.Msg($"Rotation started");
+
+				isRotating = true;
+
+				UnregisterActions();
+			}
+		}
+
+		public static void EndRotation()
+		{
+			Melon<Core>.Logger.Msg($"Rotation ended");
+
+			SendDraftingContext();
+
+			isRotating = false;
+		}
 
 		public static void StartRedraw()
 		{
@@ -77,19 +99,26 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
 			actions.Add(new ChooseRoomAction());
 
 			//TODO Crown of the Blueprints is handled differently
-			AddRedrawAction(new RedrawClassAction());
-			AddRedrawAction(new RedrawCrownAction());
-			AddRedrawAction(new RedrawDrawingAction());
-			AddRedrawAction(new RedrawInkwellAction());
-			AddRedrawAction(new RedrawRookAction());
-			AddRedrawAction(new RedrawStudyAction());
-			if (!InventoryManager.GetIvoryDice().Equals("0")) actions.Add(new RedrawWithIvoryDiceAction());
+			AddDraftingAbility(new PickBerryAction());
+			AddDraftingAbility(new OrnateCompassAction());
+			AddDraftingAbility(new DovecoteAction());
+			AddDraftingAbility(new RotundaAction());
+			AddDraftingAbility(new DancerAction());
+			AddDraftingAbility(new RedrawClassAction());
+			AddDraftingAbility(new RedrawCrownAction());
+			AddDraftingAbility(new RedrawDrawingAction());
+			AddDraftingAbility(new RedrawInkwellAction());
+			AddDraftingAbility(new RedrawRookAction());
+			AddDraftingAbility(new RedrawStudyAction());
+			AddDraftingAbility(new CronographAction());
+			AddDraftingAbility(new KnightsShieldAction());
+			if (!InventoryManager.GetIvoryDice().Equals("0")) actions.Add(new RedrawIvoryDiceAction());
 			
 			Context.Send(draftingContext, false);
 			NeuroActionHandler.RegisterActions(actions);
 		}
 
-		private static void AddRedrawAction(RedrawAction action)
+		private static void AddDraftingAbility(DraftingAbilityAction action)
 		{
 			GameObject textObject = FsmUtil.GetChildGameObject(action.GAME_OBJECT_NAME, "TEXT");
 

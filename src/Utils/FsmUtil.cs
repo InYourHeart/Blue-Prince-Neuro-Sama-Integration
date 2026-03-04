@@ -193,6 +193,27 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Utils
 			}
 		}
 
+		public static FsmState GetFsmState(string gameObjectName, string stateName)
+		{
+			try
+			{
+				PlayMakerFSM fsm = GetPlayMakerFSM(gameObjectName);
+
+				if (fsm == null) return null;
+
+				for (int i = 0; i < fsm.FsmStates.Count; i++)
+				{
+					FsmState state = fsm.FsmStates[i];
+
+					if (state != null && state.name == stateName) {
+						return state;
+					}
+				}
+			} catch {}
+
+			return null;
+		}
+
 		public static FsmState GetFsmState(string gameObjectName, int stateIndex) {
 			PlayMakerFSM fsm = GetPlayMakerFSM(gameObjectName);
 
@@ -207,9 +228,14 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Utils
 		{
 			PlayMakerFSM fsm = GetPlayMakerFSM(gameObjectName);
 
+			return GetActiveFsmState(fsm);
+		}
+
+		public static FsmState GetActiveFsmState(PlayMakerFSM fsm)
+		{
 			if (fsm == null) return null;
 
-			foreach(FsmState state in fsm.FsmStates)
+			foreach (FsmState state in fsm.FsmStates)
 			{
 				if (state.active)
 				{

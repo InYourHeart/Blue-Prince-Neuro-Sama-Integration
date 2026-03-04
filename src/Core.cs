@@ -50,20 +50,26 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod
 				{
 					if (__instance == null) return;
 
+					if (actionToTake != "") Melon<Core>.Logger.Msg("Action to take: " + actionToTake);
+
 					if (actionToTake.Contains("DRAFT PLAN"))
 					{
 						PlayMakerFSM fsm = FsmUtil.GetPlayMakerFSM(actionToTake);
 
 						fsm.SendEvent("click");
+
+						actionToTake = "";
 					}
 
-					if (actionToTake.Contains(RedrawAction.REDRAW_FLAG))
+					if (actionToTake.Contains(DraftingAbilityAction.DRAFTING_ABILITY_FLAG))
 					{
-						string redrawObjectName = actionToTake.Substring(RedrawAction.REDRAW_FLAG.Length);
+						string redrawObjectName = actionToTake.Substring(DraftingAbilityAction.DRAFTING_ABILITY_FLAG.Length);
 
 						PlayMakerFSM fsm = FsmUtil.GetChildPlayMakerFSM(redrawObjectName, "CLICK fsm");
 
 						fsm.SendEvent("click");
+
+						actionToTake = "";
 					}
 
 					UpdatePlayerLocationContext();
@@ -95,14 +101,27 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod
 					{
 						DraftManager.EndRedraw();
 					}
+
+					FsmState rotationState1 = FsmUtil.GetActiveFsmState("Rotate 1");
+					FsmState rotationState2 = FsmUtil.GetActiveFsmState("Rotate 2");
+					FsmState rotationState3 = FsmUtil.GetActiveFsmState("Rotate 3");
+					if (!DraftManager.isRotating 
+						&& (rotationState1 != null && rotationState1.name.Contains("Pre Rotate")
+						|| rotationState2 != null && rotationState2.name.Contains("Pre Rotate")
+						|| rotationState3 != null && rotationState3.name.Contains("Pre Rotate")))
+					{
+						DraftManager.StartRotation();
+					}
+
+					FsmState draftControllerState = FsmUtil.GetActiveFsmState("Draft Controller Selector");
+					if (DraftManager.isRotating && draftControllerState.name.Contains("Enable inputs"))
+					{
+						DraftManager.EndRotation();
+					}
 				}
 				catch (Exception e)
 				{
 					Melon<Core>.Logger.Error(e.Message);
-				} 
-				finally
-				{
-					actionToTake = "";
 				}
             }
         }

@@ -1,6 +1,6 @@
 ﻿namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Actions
 {
-	public class RedrawDrawingAction : RedrawAction
+	public class RedrawDrawingAction : DraftingAbilityAction
 	{
 		public override string GAME_OBJECT_NAME => "REDRAW DRAWING";
 
