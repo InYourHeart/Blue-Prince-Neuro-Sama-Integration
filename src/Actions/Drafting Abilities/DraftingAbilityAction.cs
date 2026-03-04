@@ -16,15 +16,11 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Actions
 		{
 			Core.actionToTake = DRAFTING_ABILITY_FLAG + GAME_OBJECT_NAME;
 
-			Melon<Core>.Logger.Msg("c - " + Core.actionToTake);
-
 			return Task.CompletedTask;
 		}
 
 		protected override ExecutionResult Validate(ActionData actionData, out string resultData)
 		{
-			Melon<Core>.Logger.Msg("b");
-
 			resultData = "";
 
 			return ExecutionResult.Success();
