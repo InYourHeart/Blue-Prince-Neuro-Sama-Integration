@@ -1,6 +1,8 @@
-﻿namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Actions
+﻿using Blue_Prince_Neuro_Sama_Integration_Mod.src.Actions.Drafting_Abilities.Redraw;
+
+namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Actions
 {
-	public class RedrawRookAction : DraftingAbilityAction
+	public class RookAction : RedrawAction
 	{
 		public override string GAME_OBJECT_NAME => "REDRAW ROOK";
 

@@ -1,6 +1,8 @@
-﻿namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Actions
+﻿using Blue_Prince_Neuro_Sama_Integration_Mod.src.Actions.Drafting_Abilities.Misc;
+
+namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Actions
 {
-	public class PickBerryAction : DraftingAbilityAction
+	public class PickBerryAction : MiscAction
 	{
 		public override string GAME_OBJECT_NAME => "PICK BERRY";
 

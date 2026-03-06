@@ -5,7 +5,6 @@ using HarmonyLib;
 using Il2Cpp;
 using Il2CppBluePrince;
 using Il2CppHutongGames.PlayMaker;
-using Il2CppHutongGames.PlayMaker.Actions;
 using Il2CppTMPro;
 using MelonLoader;
 using NeuroSDKCsharp;
@@ -21,7 +20,8 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod
     public class Core : MelonMod
     {
         public volatile static string actionToTake = "";
-        public static string currentRoom = "None";
+		public volatile static DraftingAbilityAction draftingAbilityToTake = null;
+		public static string currentRoom = "None";
 
         public override void OnEarlyInitializeMelon()
         {
@@ -61,15 +61,21 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod
 						actionToTake = "";
 					}
 
-					if (actionToTake.Contains(DraftingAbilityAction.DRAFTING_ABILITY_FLAG))
+					if (draftingAbilityToTake != null)
 					{
-						string redrawObjectName = actionToTake.Substring(DraftingAbilityAction.DRAFTING_ABILITY_FLAG.Length);
-
-						PlayMakerFSM fsm = FsmUtil.GetChildPlayMakerFSM(redrawObjectName, "CLICK fsm");
+						PlayMakerFSM fsm = FsmUtil.GetChildPlayMakerFSM(draftingAbilityToTake.GAME_OBJECT_NAME, "CLICK fsm");
 
 						fsm.SendEvent("click");
 
-						actionToTake = "";
+						if (draftingAbilityToTake.DRAFTING_ABILITY_TYPE.Equals(new ClassAction().DRAFTING_ABILITY_TYPE)) { 
+							//Idk if anything needs to be here
+						}
+						else if (draftingAbilityToTake.DRAFTING_ABILITY_TYPE.Equals(new DancerAction().DRAFTING_ABILITY_TYPE))
+						{
+							DraftManager.StartRotation();
+						}
+
+						draftingAbilityToTake = null;
 					}
 
 					UpdatePlayerLocationContext();
@@ -102,30 +108,20 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod
 						DraftManager.EndRedraw();
 					}
 
-					FsmState rotationState1 = FsmUtil.GetActiveFsmState("Rotate 1");
-					FsmState rotationState2 = FsmUtil.GetActiveFsmState("Rotate 2");
-					FsmState rotationState3 = FsmUtil.GetActiveFsmState("Rotate 3");
-					if (!DraftManager.isRotating 
-						&& (rotationState1 != null && rotationState1.name.Contains("Pre Rotate")
-						|| rotationState2 != null && rotationState2.name.Contains("Pre Rotate")
-						|| rotationState3 != null && rotationState3.name.Contains("Pre Rotate")))
-					{
-						DraftManager.StartRotation();
-					}
-
 					FsmState draftControllerState = FsmUtil.GetActiveFsmState("Draft Controller Selector");
-					if (DraftManager.isRotating && draftControllerState.name.Contains("Enable inputs"))
-					{
-						DraftManager.EndRotation();
-					}
-
 					GameObject rotationErrorGameObject = GameObject.Find("ROTATION ERROR POPUP");
-					if (!DraftManager.isFailedRotation && rotationErrorGameObject != null)
+					if (DraftManager.isRotating)
 					{
-						DraftManager.StartFailRotation();
-					} else if (DraftManager.isFailedRotation && rotationErrorGameObject == null)
-					{
-						DraftManager.EndFailRotation();
+						if (!DraftManager.isFailedRotation && rotationErrorGameObject != null)
+						{
+							DraftManager.StartFailRotation();
+						} else if (DraftManager.isFailedRotation && rotationErrorGameObject == null)
+						{
+							DraftManager.EndFailRotation();
+						} else if (!DraftManager.isFailedRotation && draftControllerState.name.Contains("Enable inputs"))
+						{
+							DraftManager.EndRotation();
+						}
 					}
 				}
 				catch (Exception e)

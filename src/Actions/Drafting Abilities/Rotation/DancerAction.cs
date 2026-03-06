@@ -1,6 +1,8 @@
-﻿namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Actions
+﻿using Blue_Prince_Neuro_Sama_Integration_Mod.src.Actions.Drafting_Abilities.Rotation;
+
+namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Actions
 {
-	public class DancerAction : DraftingAbilityAction
+	public class DancerAction : RotationAction
 	{
 		public override string GAME_OBJECT_NAME => "DANCER";
 

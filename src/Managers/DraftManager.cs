@@ -115,15 +115,15 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
 			AddDraftingAbility(new DovecoteAction());
 			AddDraftingAbility(new RotundaAction());
 			AddDraftingAbility(new DancerAction());
-			AddDraftingAbility(new RedrawClassAction());
-			AddDraftingAbility(new RedrawCrownAction());
-			AddDraftingAbility(new RedrawDrawingAction());
-			AddDraftingAbility(new RedrawInkwellAction());
-			AddDraftingAbility(new RedrawRookAction());
-			AddDraftingAbility(new RedrawStudyAction());
+			AddDraftingAbility(new ClassAction());
+			AddDraftingAbility(new CrownAction());
+			AddDraftingAbility(new DrawingAction());
+			AddDraftingAbility(new InkwellAction());
+			AddDraftingAbility(new RookAction());
+			AddDraftingAbility(new StudyAction());
 			AddDraftingAbility(new CronographAction());
 			AddDraftingAbility(new KnightsShieldAction());
-			if (!InventoryManager.GetIvoryDice().Equals("0")) actions.Add(new RedrawIvoryDiceAction());
+			if (!InventoryManager.GetIvoryDice().Equals("0")) actions.Add(new IvoryDiceAction());
 
 			NeuroActionHandler.RegisterActions(actions);
 		}
