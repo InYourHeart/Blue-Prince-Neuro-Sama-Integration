@@ -36,9 +36,9 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Actions
 
         protected override ExecutionResult Validate(ActionData actionData, out string draftPlanObjectName)
         {
-            //TODO Validate Gems and what not?
+			DraftManager.UnregisterActions();
 
-            string choice = actionData.Data?["choice"]?.Value<string>();
+			string choice = actionData.Data?["choice"]?.Value<string>();
 
             switch (choice)
             {
@@ -94,7 +94,6 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Actions
 
             }
 
-			DraftManager.UnregisterActions();
 			return ExecutionResult.Success();
         }
     }

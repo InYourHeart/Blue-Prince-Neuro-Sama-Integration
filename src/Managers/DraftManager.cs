@@ -103,6 +103,13 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
 		{
 			NeuroActionHandler.UnregisterActions(actions);
 			actions.Clear();
+
+			ChooseRoomAction dummyAction = new ChooseRoomAction();
+
+			while (NeuroActionHandler.GetRegistered(dummyAction.Name) != null || NeuroActionHandler.IsRecentlyUnregistered(dummyAction.Name))
+			{
+				//Wait for the actions to unregister
+			}
 		}
 
 		public static void RegisterActions()
