@@ -8,6 +8,6 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Actions
 
 		public override string Name => "redraw_class";
 
-		protected override string Description => "Redraw the three floor plans for the draft using the Classroom's effect.";
+		protected override string Description => "Redraw the three floor plans using the Classroom's drafting ability.";
 	}
 }

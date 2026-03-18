@@ -1,9 +1,8 @@
-﻿using Il2Cpp;
+﻿using Blue_Prince_Neuro_Sama_Integration_Mod.src.Rooms;
 using Blue_Prince_Neuro_Sama_Integration_Mod.src.Utils;
+using Il2Cpp;
 using MelonLoader;
 using NeuroSDKCsharp.Messages.Outgoing;
-using UnityEngine;
-using Room = Blue_Prince_Neuro_Sama_Integration_Mod.src.Rooms.Room;
 
 namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
 {
@@ -30,28 +29,28 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
 
         private static PlayMakerFSM gridFSM;
 
-        private static Room[,] HouseLayout = new Room[9, 5];
+        private static FloorPlan[,] HouseLayout = new FloorPlan[9, 5];
 
         public static void Initialize()
         {
             gridFSM = FsmUtil.GetPlayMakerFSM("THE GRID");
         }
 
-        public static void Set(int rank, int tile, Room room)
+        public static void Set(int rank, int tile, FloorPlan room)
         {
             Context.Send("A " + room.name + " has been drafted into Rank " + rank + ", Tile " + tile, false);
 
             HouseLayout[rank - 1, tile - 1] = room;
         }
 
-        private static Room Get(int rank, int tile)
+        private static FloorPlan Get(int rank, int tile)
         {
             if (rank <  MIN_RANK || rank > MAX_RANK || tile < MIN_TILE || tile > MAX_TILE) { return null;}
 
             return HouseLayout[rank - 1, tile - 1];
         }
 
-        public static Room[] GetCurrentNeighbours()
+        public static FloorPlan[] GetCurrentNeighbours()
         {
             int rank = CurrentRank() == null ? ENTRANCE_HALL_RANK : (int) CurrentRank();
             int tile = CurrentTile() == null ? ENTRANCE_HALL_TILE : (int) CurrentTile();
@@ -59,32 +58,32 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
             return GetNeighbours(rank, tile);
         }
 
-        public static Room[] GetTargetNeighbours() {
+        public static FloorPlan[] GetTargetNeighbours() {
             int rank = TargetRank() == null ? -1 : (int) TargetRank();
             int tile = TargetTile() == null ? -1 : (int) TargetTile();
 
             if (rank == -1 || tile == -1) {
                 Melon<Core>.Logger.Error("Could not get target's rank or tile!");
-                return new Room[3];
+                return new FloorPlan[3];
             }
 
             return GetNeighbours(rank, tile);
         } 
 
         //Returns rooms neighbouring the tile in a North-East-South-West order
-        private static Room[] GetNeighbours(int rank, int tile)
+        private static FloorPlan[] GetNeighbours(int rank, int tile)
         {
-            Room northRoom = null;
-            Room eastRoom = null;
-            Room southRoom = null;
-            Room westRoom = null;
+            FloorPlan northRoom = null;
+            FloorPlan eastRoom = null;
+            FloorPlan southRoom = null;
+            FloorPlan westRoom = null;
 
             //Northern room
             //No northern rooms at rank 9 outside of room 46.
             if (rank == ANTECHAMBER_RANK && tile == ANTECHAMBER_TILE)
             {
                 //Might be spoilers?
-                northRoom = new Room("ROOM 46");
+                northRoom = new FloorPlan("ROOM 46");
             }
             else if (rank < MAX_RANK)
             {
@@ -119,7 +118,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
                 westRoom = Get(rank, tile - 1);
             }
 
-            return new Room[] { northRoom, eastRoom, southRoom, westRoom };
+            return new FloorPlan[] { northRoom, eastRoom, southRoom, westRoom };
         }
 
         public static int? CurrentDraftDirection()
@@ -142,22 +141,22 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
             return null;
         }
 
-        public static Room GetCurrentNorth()
+        public static FloorPlan GetCurrentNorth()
         {
             return HouseLayout[CurrentRankHandlingNull(), CurrentTileHandlingNull() - 1];
         }
 
-        public static Room GetCurrentSouth()
+        public static FloorPlan GetCurrentSouth()
         {
             return HouseLayout[CurrentRankHandlingNull() - 2, CurrentTileHandlingNull() - 1];
         }
 
-        public static Room GetCurrentEast()
+        public static FloorPlan GetCurrentEast()
         {
             return HouseLayout[CurrentRankHandlingNull() - 1, CurrentTileHandlingNull()];
         }
 
-        public static Room GetCurrentWest()
+        public static FloorPlan GetCurrentWest()
         {
             return HouseLayout[CurrentRankHandlingNull() - 1, CurrentTileHandlingNull() - 2];
         }

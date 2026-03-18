@@ -8,6 +8,6 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Actions
 
 		public override string Name => "dovecote";
 
-		protected override string Description => "Rotate the floorplans clockwise using the Dovecote's effect.";
+		protected override string Description => "Rotate the floorplans clockwise using the Dovecote's drafting ability.";
 	}
 }

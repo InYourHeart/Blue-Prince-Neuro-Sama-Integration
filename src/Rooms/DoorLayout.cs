@@ -31,7 +31,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Rooms
                 RotateDraft(draftRotations);
             }
 
-            Room[] neighbours = GridFSMManager.GetTargetNeighbours();
+            FloorPlan[] neighbours = GridFSMManager.GetTargetNeighbours();
 
             northDoor.isBlocked = neighbours[0] == null ? false : !neighbours[0].doorLayout.southDoor.exists;
             eastDoor.isBlocked = neighbours[1] == null ? false : !neighbours[1].doorLayout.westDoor.exists;

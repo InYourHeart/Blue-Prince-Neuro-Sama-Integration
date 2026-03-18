@@ -5,13 +5,12 @@ using MelonLoader;
 using NeuroSDKCsharp.Actions;
 using NeuroSDKCsharp.Messages.Outgoing;
 using UnityEngine;
-using Room = Blue_Prince_Neuro_Sama_Integration_Mod.src.Rooms.Room;
 
 namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
 {
     public class DraftManager
     {
-        public static Room[] draftedRooms = new Room[3];
+        public static FloorPlan[] draftedFloorPlans = new FloorPlan[3];
         public static bool isDrafting = false;
 		public static bool isRedrawing = false;
 		public static bool isRotating = false;
@@ -155,23 +154,23 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
 			}
 		}
 
-		private static Room GetDraftedRoom(string slot)
+		private static FloorPlan GetDraftedFloorPlan(string slot)
         {
             try
             {
-                Room room = new Room("PLAN" + slot + " - ENGINE");
+                FloorPlan floorPlan = new FloorPlan("PLAN" + slot + " - ENGINE");
 
-                int? roomRotation = FsmUtil.GetFsmInt("PLAN MANAGEMENT", "PLAN" + slot + " - ROTATION AMOUNT");
-                int rotation = roomRotation == null ? 0 : (int) roomRotation / 90;
+                int? floorPlanRotation = FsmUtil.GetFsmInt("PLAN MANAGEMENT", "PLAN" + slot + " - ROTATION AMOUNT");
+                int rotation = floorPlanRotation == null ? 0 : (int) floorPlanRotation / 90;
 
-                room.doorLayout = DoorLayout.GetDoorLayout(room.name, rotation);
+                floorPlan.doorLayout = DoorLayout.GetDoorLayout(floorPlan.name, rotation);
 
-                draftedRooms[int.Parse(slot) - 1] = room;
+                draftedFloorPlans[int.Parse(slot) - 1] = floorPlan;
 
-                return room;
+                return floorPlan;
             } catch (Exception)
             {
-                Melon<Core>.Logger.Error($"Could not retrieve the Room object for slot " + slot + "!");
+                Melon<Core>.Logger.Error($"Could not retrieve the floor plan object for slot " + slot + "!");
                 return null;
             }
         }
@@ -197,8 +196,9 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
 			int targetRank = (int)GridFSMManager.TargetRank();
 			int targetTile = (int)GridFSMManager.TargetTile();
 
-			return "A redraw for the draft for Rank " + targetRank + ", Tile " + targetTile + " has begun.\n" +
-					"The following three floor plans have been pulled from the draft pool and may chosen from:\n";
+
+
+			return "A redraw for the draft for Rank " + targetRank + ", Tile " + targetTile + " has begun.\n";
 		}
 
 
@@ -213,14 +213,12 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
             int targetRank = (int)GridFSMManager.TargetRank();
             int targetTile = (int)GridFSMManager.TargetTile();
 
-            return "A draft for Rank " + targetRank + ", Tile " + targetTile + " has begun.\n" +
-                    "The following three floor plans have been pulled from the draft pool and may chosen from:\n";
+			return "A draft for Rank " + targetRank + ", Tile " + targetTile + " has begun.\n";
         }
 
 		private static string StartingOuterDraftContext()
 		{
-			return "A draft for the Outer Room has begun.\n" +
-					"The following three floor plans have been pulled from the draft pool and may chosen from:\n";
+			return "A draft for the Outer Room has begun.\n";
 		}
 
 
@@ -228,70 +226,70 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
         {
             return slot + ". ";
         }
-        private static string ArchivedFloorPlanContext(Room roomInSlot)
+        private static string ArchivedFloorPlanContext(FloorPlan floorPlanInSlot)
         {
             return "An archived floor plan\n";
         }
 
-        private static string FloorPlanContext(Room roomInSlot)
+        private static string FloorPlanContext(FloorPlan floorPlanInSlot)
         {
             string floorPlanText = "";
 
-            floorPlanText += FloorPlanNameContext(roomInSlot);
+            floorPlanText += FloorPlanNameContext(floorPlanInSlot);
 
-            floorPlanText += FloorPlanRarityContext(roomInSlot);
+            floorPlanText += FloorPlanRarityContext(floorPlanInSlot);
 
-            if (roomInSlot.effect != "")
+            if (floorPlanInSlot.effect != "")
             {
-                floorPlanText += FloorPlanEffectContext(roomInSlot);
+                floorPlanText += FloorPlanEffectContext(floorPlanInSlot);
             }
 
-            floorPlanText += FloorPlanTypesContext(roomInSlot);
+            floorPlanText += FloorPlanTypesContext(floorPlanInSlot);
 
             //Don't look for Outer Room's door layout
-            if (!roomInSlot.isOuter)
+            if (!floorPlanInSlot.isOuter)
             {
-                floorPlanText += "\t* Unblocked doors: " + roomInSlot.doorLayout.GetDraftingContext() + "\n";
+                floorPlanText += "\t* Unblocked doors: " + floorPlanInSlot.doorLayout.GetDraftingContext() + "\n";
             }
 
             return floorPlanText;
         }
 
-        private static string FloorPlanNameContext(Room roomInSlot)
+        private static string FloorPlanNameContext(FloorPlan floorPlanInSlot)
         {
-            return roomInSlot.name + "\n";
+            return floorPlanInSlot.name + "\n";
         }
 
-        private static string FloorPlanRarityContext(Room roomInSlot)
+        private static string FloorPlanRarityContext(FloorPlan floorPlanInSlot)
         {
-            return "\t* Rarity: " + roomInSlot.rarity + ";\n";
+            return "\t* Rarity: " + floorPlanInSlot.rarity + ";\n";
         }
 
-        private static string FloorPlanEffectContext(Room roomInSlot)
+        private static string FloorPlanEffectContext(FloorPlan floorPlanInSlot)
         {
-            return "\t* Effect: " + roomInSlot.effect + ";\n";
+            return "\t* Effect: " + floorPlanInSlot.effect + ";\n";
         }
 
-        private static string FloorPlanTypesContext(Room roomInSlot)
+        private static string FloorPlanTypesContext(FloorPlan floorPlanInSlot)
         {
-            return "\t* Type:" + roomInSlot.types + ";\n";
+            return "\t* Type:" + floorPlanInSlot.types + ";\n";
         }
 
-        private static string FloorPlanCostContext(Room roomInSlot)
+        private static string FloorPlanCostContext(FloorPlan floorPlanInSlot)
         {
-            if (roomInSlot.cost <= 0) return "";
+            if (floorPlanInSlot.cost <= 0) return "";
 
-            int cost = (IsHovelActive() ? roomInSlot.cost * 3 : roomInSlot.cost);
+            int cost = (IsHovelActive() ? floorPlanInSlot.cost * 3 : floorPlanInSlot.cost);
             string resource = (IsHovelActive() ? "steps" : cost == 1 ? "gem" : "gems");
 
             return "\t* Cost: " + cost + " " + resource + ";\n";
         }
 
-        private static string UpdateDraftingContext(string slot)
+		private static string UpdateDraftingContext(string slot)
         {
-            Room roomInSlot = GetDraftedRoom(slot);
+            FloorPlan floorPlanInSlot = GetDraftedFloorPlan(slot);
 
-            if (roomInSlot == null) {
+            if (floorPlanInSlot == null) {
                 return "";
             }
 
@@ -299,7 +297,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
 
 			if (slot.Equals("1"))
 			{
-				if (roomInSlot.isOuter)
+				if (floorPlanInSlot.isOuter)
 				{
 					draftingContext += StartingOuterDraftContext();
 				} else if (isRedrawing)
@@ -309,28 +307,31 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
 				{
 					draftingContext += StartingDraftContext();
 				}
+
+				draftingContext += "Three floor plans may be chosen from:\n";
 			}
 
             draftingContext += SlotNumberContext(slot);
 
             if (IsArchived(slot))
             {
-                draftingContext += ArchivedFloorPlanContext(roomInSlot);
+                draftingContext += ArchivedFloorPlanContext(floorPlanInSlot);
             } else
             {
-                draftingContext += FloorPlanContext(roomInSlot);
+                draftingContext += FloorPlanContext(floorPlanInSlot);
             }
 
-			if (roomInSlot.name.ToUpper().Equals("COAT CHECK"))
+			if (floorPlanInSlot.name.ToUpper().Equals("COAT CHECK"))
 			{
 				draftingContext += CoatCheckManager.GetCoatCheckContext(slot);
 			}
 
-            draftingContext += FloorPlanCostContext(roomInSlot);
+            draftingContext += FloorPlanCostContext(floorPlanInSlot);
 
             if (slot.Equals("3"))
             {
                 draftingContext += InventoryManager.GetInventoryContext();
+				draftingContext += "Remember that if you don't like the current draft, you may be able to use an action to change it.";
             }
 
             if (draftingContext.LastIndexOf(";") != -1) {

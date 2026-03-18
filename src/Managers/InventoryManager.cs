@@ -36,7 +36,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
 				+ GetGold() + " gold, " 
 				+ GetKeys() + " key(s), " 
 				+ GetGems() + " gem(s) and " 
-				+ GetSteps() + " steps.";
+				+ GetSteps() + " steps.\n";
         }
 
 		public static string GetItemByID(int id)

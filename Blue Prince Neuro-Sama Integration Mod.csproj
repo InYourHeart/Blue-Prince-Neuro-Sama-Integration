@@ -352,7 +352,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Compile Include="src\Actions\ChooseRoomAction.cs" />
+		<Compile Include="src\Actions\ChooseFloorPlanAction.cs" />
 		<Compile Include="src\Actions\Drafting Abilities\Misc\MiscAction.cs" />
 		<Compile Include="src\Actions\Drafting Abilities\Redraw\RedrawAction.cs" />
 		<Compile Include="src\Actions\Drafting Abilities\Rotation\RotationAction.cs" />
@@ -378,7 +378,7 @@
 		<Compile Include="src\Managers\InventoryManager.cs" />
 		<Compile Include="src\Rooms\Door.cs" />
 		<Compile Include="src\Rooms\DoorLayout.cs" />
-		<Compile Include="src\Rooms\Room.cs" />
+		<Compile Include="src\Rooms\FloorPlan.cs" />
 		<Compile Include="src\Utils\FsmUtil.cs" />
 	</ItemGroup>
 

@@ -8,6 +8,6 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Actions
 
 		public override string Name => "redraw_ivory_dice";
 
-		protected override string Description => "Redraw the three floor plans for the draft. It costs 1 ivory dice.";
+		protected override string Description => "Redraw the three floor plans for the draft using the Ivory Dice's drafting ability. It costs 1 ivory dice.";
 	}
 }

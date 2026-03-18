@@ -8,6 +8,6 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Actions
 
 		public override string Name => "dancer";
 
-		protected override string Description => "Rotate the floorplans clockwise using the Dancer's power. It costs 1 gem.";
+		protected override string Description => "Rotate the floorplans clockwise using the Dancer's drafting ability. It costs 1 gem.";
 	}
 }

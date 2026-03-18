@@ -8,6 +8,6 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Actions
 
 		public override string Name => "cronograph";
 
-		protected override string Description => "Reverse the last redraw using the Chronograph's power.";
+		protected override string Description => "Reverse the last redraw using the Chronograph's drafting ability.";
 	}
 }

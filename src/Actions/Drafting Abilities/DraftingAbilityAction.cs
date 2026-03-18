@@ -1,5 +1,4 @@
 ﻿using Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers;
-using MelonLoader;
 using NeuroSDKCsharp.Actions;
 using NeuroSDKCsharp.Json;
 using NeuroSDKCsharp.Websocket;

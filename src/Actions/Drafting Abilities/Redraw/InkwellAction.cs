@@ -8,6 +8,6 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Actions
 
 		public override string Name => "redraw_inkwell";
 
-		protected override string Description => "Redraw the three floor plans for the draft using the Inkwell's power. It cost 1 star.";
+		protected override string Description => "Redraw the three floor plans for the draft using the Inkwell's drafting ability. It cost 1 star.";
 	}
 }

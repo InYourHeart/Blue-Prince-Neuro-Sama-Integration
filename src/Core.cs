@@ -35,6 +35,28 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod
             if (sceneName.Contains("Mount Holly")){
                 Time.timeScale = 1;
                 GridFSMManager.Initialize();
+				//Send a modified transcript of the intro cutscene as the inital context because that's fun. We can actually explain mechanics later
+				/*Context.Send("You received a phonograph recording in the mail which contained the following:" +
+					"I, Herbert S. 987 of the Mount Holly estate at Reddington, do publish, and declare this instrument, my last will and testament, and hereby revoke all wills and codicils heretofore made by me." +
+					"I give and bequeath to my grand niece Neuro S. 987, daughter of my dear nephew Vedal 987, all of my right, title and interest in and to the house and land which I own near Mount Holly." +
+					"" +
+					"The above provision and request is contingent on my aforementioned grand-niece discovering the location of the 46th room of my forty-five room estate." +
+					"The location of the room has been kept a secret from all the staff and servants of the manor, but I am confident that any heiress worthy of the 987 legacy should have no trouble uncovering its whereabouts within a timely manner." +
+					"Should my grandniece fail to uncover this room or provide proof of his discovery to the executors of my will, then this gift shall lapse." +
+					"" +
+					"In witness whereof, I have hereunto set my hand this 18th day of March, 1993." +
+					"" +
+					"Herbert S. 987");*/
+
+				//Start of day instructions
+				//TODO Include context on the initial state of the grid (Foundation means it can't be just a static string)
+				Context.Send("A new day in the Mount Holly Estate has begun. " +
+					"Your goal is to reach Room 46, hidden somewhere inside the Estate's House, within the timeframe of a single day." +
+					"The House is composed of a 9 (South to North) by 5 (West to East) grid of Rooms. It starts off mostly empty, containing only the Antechamber on Rank 9, Tile 3, and the Entrance Hall (where you start each day) on Rank 1, Tile 3. It resets at the end of the day, though you will be able to try again starting the next morning." +
+					"You can add new Rooms to the House through the Draft, which may be initialized by using one of the unblocked doors of the Room you are currently in." +
+					"During a Draft you will be able to choose one of three Floor Plans, each corresponding to a specific Room. Various effects and abilities exist that may change the layout of the Floor Plans, replace them with new ones, or change the way the Draft works. Not all of these are necessarily beneficial, however." +
+					"Furthermore, some Rooms and abilities have costs associated with them. You can obtain the necessary resources by picking up and using various items that will be scattered throughout the House. Certain Rooms provide better access to resources, while others are better at providing Doors that will open new paths in order to go deeper into the House." +
+					"Finally, you have a Step counter that defines how far you can go. Every time you enter a Room, you will lose one step. If you reach 0 steps, you will be too tired to continue and will have to call it a day.");
             } else
             {
                 Time.timeScale = 5;

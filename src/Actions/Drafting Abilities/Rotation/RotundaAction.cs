@@ -8,6 +8,6 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Actions
 
 		public override string Name => "rotunda";
 
-		protected override string Description => "Rotate the floorplans clockwise using the Rotunda's effect.";
+		protected override string Description => "Rotate the floorplans clockwise using the Rotunda's drafting ability.";
 	}
 }

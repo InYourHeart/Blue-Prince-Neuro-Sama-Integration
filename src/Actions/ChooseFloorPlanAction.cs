@@ -1,7 +1,5 @@
-﻿using Blue_Prince_Neuro_Sama_Integration_Mod.src;
-using Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers;
+﻿using Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers;
 using Blue_Prince_Neuro_Sama_Integration_Mod.src.Rooms;
-using Blue_Prince_Neuro_Sama_Integration_Mod.src.Utils;
 using MelonLoader;
 using NeuroSDKCsharp.Actions;
 using NeuroSDKCsharp.Json;
@@ -10,7 +8,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Actions
 {
-    public class ChooseRoomAction : NeuroAction<string>
+    public class ChooseFloorPlanAction : NeuroAction<string>
     {
         public override string Name => "pick_draft_option";
 		protected override string Description => "Choose one of the three floor plans to draft.";
@@ -45,7 +43,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Actions
                 case "1":
                 case "2":
                 case "3":
-                    Room chosenRoom = DraftManager.draftedRooms[int.Parse(choice) - 1];
+                    FloorPlan chosenFloorPlan = DraftManager.draftedFloorPlans[int.Parse(choice) - 1];
 
                     if (!choice.Equals("1"))
                     {
@@ -54,16 +52,16 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Actions
 
                         if (DraftManager.IsHovelActive())
                         {
-                            if ((chosenRoom.cost * 3) > int.Parse(InventoryManager.GetSteps()))
+                            if ((chosenFloorPlan.cost * 3) > int.Parse(InventoryManager.GetSteps()))
 							{
 								canAffordRoomCost = false;
-								errorMessage = $"You do not have enough Steps to draft the {chosenRoom.name}. Try to pick a different option.";
+								errorMessage = $"You do not have enough Steps to draft the {chosenFloorPlan.name}. Try to pick a different option.";
                             }
                         }
-                        else if (chosenRoom.cost > int.Parse(InventoryManager.GetGems()))
+                        else if (chosenFloorPlan.cost > int.Parse(InventoryManager.GetGems()))
 						{
 							canAffordRoomCost = false;
-							errorMessage = $"You do not have enough Gems to draft the {chosenRoom.name}. Try to pick a different option.";
+							errorMessage = $"You do not have enough Gems to draft the {chosenFloorPlan.name}. Try to pick a different option.";
                         }
 
 						if (!canAffordRoomCost)
@@ -78,10 +76,10 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Actions
 
                     if (GridFSMManager.TargetRank() == null || GridFSMManager.TargetTile() == null)
                     {
-                        Melon<Core>.Logger.Error($"Could not obtain the draft's target rank or tile while adding the picked room!");
-                    } else if (!chosenRoom.isOuter)
+                        Melon<Core>.Logger.Error($"Could not obtain the draft's target rank or tile while adding the picked floor plan!");
+                    } else if (!chosenFloorPlan.isOuter)
                     {
-                        GridFSMManager.Set((int)GridFSMManager.TargetRank(), (int)GridFSMManager.TargetTile(), chosenRoom);
+                        GridFSMManager.Set((int)GridFSMManager.TargetRank(), (int)GridFSMManager.TargetTile(), chosenFloorPlan);
                     }
                         
                     break;

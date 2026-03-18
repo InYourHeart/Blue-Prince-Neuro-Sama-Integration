@@ -3,7 +3,7 @@ using Blue_Prince_Neuro_Sama_Integration_Mod.src.Utils;
 
 namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Rooms
 {
-    public class Room
+    public class FloorPlan
     {
         public string name { get; set; }
         public string description { get; set; }
@@ -16,7 +16,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Rooms
 
         public DoorLayout doorLayout { get; set; }
 
-        public Room(string roomName)
+        public FloorPlan(string roomName)
         {
             PlayMakerFSM fsm = FsmUtil.GetPlayMakerFSM(FsmUtil.GetGameObject("PLAN MANAGEMENT", roomName).name);
 
