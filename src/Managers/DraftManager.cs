@@ -16,7 +16,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
 		public static bool isRotating = false;
 		public static bool isFailedRotation = false;
 
-		private static List<INeuroAction> actions = new List<INeuroAction>();
+		private static ActionWindow draftActionWindow;
 
 		public static void StartRotation()
 		{
@@ -32,7 +32,8 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
 		{
 			Melon<Core>.Logger.Msg($"Rotation ended");
 
-			SendDraftingContext();
+			draftActionWindow = ActionWindow.Create();
+			SetDraftingContext();
 			RegisterActions();
 
 			isRotating = false;
@@ -54,6 +55,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
 
 			isFailedRotation = false;
 
+			draftActionWindow = ActionWindow.Create();
 			RegisterActions();
 		}
 
@@ -71,7 +73,8 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
 		{
 			Melon<Core>.Logger.Msg($"Redrawing ended");
 
-			SendDraftingContext();
+			draftActionWindow = ActionWindow.Create();
+			SetDraftingContext();
 			RegisterActions();
 
 			isRedrawing = false;
@@ -83,7 +86,8 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
 
 			isDrafting = true;
 
-			SendDraftingContext();
+			draftActionWindow = ActionWindow.Create();
+			SetDraftingContext();
 			RegisterActions();
 		}
 
@@ -98,22 +102,9 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
 			}
 		}
 
-		public static void UnregisterActions()
-		{
-			NeuroActionHandler.UnregisterActions(actions);
-			actions.Clear();
-
-			ChooseRoomAction dummyAction = new ChooseRoomAction();
-
-			while (NeuroActionHandler.GetRegistered(dummyAction.Name) != null || NeuroActionHandler.IsRecentlyUnregistered(dummyAction.Name))
-			{
-				//Wait for the actions to unregister
-			}
-		}
-
 		public static void RegisterActions()
 		{
-			actions.Add(new ChooseRoomAction());
+			draftActionWindow.AddAction(new ChooseFloorPlanAction());
 
 			//TODO Crown of the Blueprints is handled differently
 			AddDraftingAbility(new PickBerryAction());
@@ -129,12 +120,12 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
 			AddDraftingAbility(new StudyAction());
 			AddDraftingAbility(new CronographAction());
 			AddDraftingAbility(new KnightsShieldAction());
-			if (!InventoryManager.GetIvoryDice().Equals("0")) actions.Add(new IvoryDiceAction());
+			if (!InventoryManager.GetIvoryDice().Equals("0")) draftActionWindow.AddAction(new IvoryDiceAction());
 
-			NeuroActionHandler.RegisterActions(actions);
+			draftActionWindow.Register();
 		}
 
-		public static void SendDraftingContext()
+		public static void SetDraftingContext()
 		{
 			string draftingContext = "";
 
@@ -142,7 +133,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
 			draftingContext += UpdateDraftingContext("2");
 			draftingContext += UpdateDraftingContext("3");
 
-			Context.Send(draftingContext, false);
+			draftActionWindow.SetContext(draftingContext, false);
 		}
 
 		private static void AddDraftingAbility(DraftingAbilityAction action)
@@ -150,7 +141,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
 			GameObject textObject = FsmUtil.GetChildGameObject(action.GAME_OBJECT_NAME, "TEXT");
 
 			if (textObject != null && textObject.gameObject.active) {
-				actions.Add(action);
+				draftActionWindow.AddAction(action);
 			}
 		}
 

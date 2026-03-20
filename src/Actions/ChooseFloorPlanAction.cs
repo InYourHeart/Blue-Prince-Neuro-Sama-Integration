@@ -34,8 +34,6 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Actions
 
         protected override ExecutionResult Validate(ActionData actionData, out string draftPlanObjectName)
         {
-			DraftManager.UnregisterActions();
-
 			string choice = actionData.Data?["choice"]?.Value<string>();
 
             switch (choice)

@@ -38,7 +38,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers
 
         public static void Set(int rank, int tile, FloorPlan room)
         {
-            Context.Send("A " + room.name + " has been drafted into Rank " + rank + ", Tile " + tile, false);
+            //Context.Send("A " + room.name + " has been drafted into Rank " + rank + ", Tile " + tile, false);
 
             HouseLayout[rank - 1, tile - 1] = room;
         }
