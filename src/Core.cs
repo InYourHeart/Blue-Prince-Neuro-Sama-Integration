@@ -163,24 +163,18 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod
 					return;
 				}
 
-				GameObject parent = __instance;
-
-				do
+				try
 				{
-					try
-					{
-						parent = parent.transform.parent.gameObject;
+					GameObject parent = __instance.transform.parent.gameObject;
 
-						if (parent != null && parent.name.Equals("DOCUMENTS"))
-						{
-							DocumentManager.SetOpenPageContents(__instance);
-							break;
-						}
-					} catch (Exception)
+					if (parent != null && parent.name.Equals("DOCUMENTS"))
 					{
-						return;
+						DocumentManager.SetOpenPageContents(__instance);
 					}
-				} while (true);
+				} catch (Exception)
+				{
+					return;
+				}
 			}
 		}
 
