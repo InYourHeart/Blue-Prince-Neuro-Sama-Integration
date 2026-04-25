@@ -153,7 +153,38 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod
             }
         }
 
-        private static void UpdatePlayerLocationContext()
+		[HarmonyPatch(typeof(GameObject), "SetActive")]
+		class Patch_SetActive
+		{
+			static void Postfix(GameObject __instance, bool value)
+			{
+				if (!value)
+				{
+					return;
+				}
+
+				GameObject parent = __instance;
+
+				do
+				{
+					try
+					{
+						parent = parent.transform.parent.gameObject;
+
+						if (parent != null && parent.name.Equals("DOCUMENTS"))
+						{
+							DocumentManager.SetOpenPageContents(__instance);
+							break;
+						}
+					} catch (Exception)
+					{
+						return;
+					}
+				} while (true);
+			}
+		}
+
+		private static void UpdatePlayerLocationContext()
         {
             GameObject roomTextObject = GameObject.Find("Room Text");
             if (roomTextObject == null) return;

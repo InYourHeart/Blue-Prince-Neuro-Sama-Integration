@@ -1,24 +1,79 @@
-﻿using Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers;
-using Il2Cpp;
+﻿using Il2Cpp;
 using Il2CppHutongGames.PlayMaker;
+using Il2CppHutongGames.PlayMaker.Actions;
 using Il2CppTMPro;
 using MelonLoader;
 using UnityEngine;
+using UnityEngine.InputSystem.HID;
 
 namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Utils
 {
     public class FsmUtil
     {
-        public static string GetTextMeshProText(string gameObjectName, string defaultResponse)
+		public static string pathSeparator = "|";
+
+		public static string GetTextMeshProText(GameObject gameObject, string defaultResponse)
+		{
+			try
+			{
+				return gameObject.GetComponent<TextMeshPro>().text;
+			}
+			catch (Exception)
+			{
+				return defaultResponse;
+			}
+		}
+
+		public static string GetTextMeshProText(string gameObjectName, string defaultResponse)
         {
             try
             {
-                return GameObject.Find(gameObjectName).GetComponent<TextMeshPro>().text;
+                return GetTextMeshProText(GameObject.Find(gameObjectName), defaultResponse);
             }
             catch (Exception) {
                 return defaultResponse;
             }
         }
+
+		public static string GetTextMeshProText(GameObject gameObject, string childName, string defaultResponse)
+		{
+			try
+			{
+				return GetTextMeshProText(GetChildGameObject(gameObject, childName), defaultResponse);
+			}
+			catch (Exception)
+			{
+				return defaultResponse;
+			}
+		}
+
+		public static string GetTextMeshProText(string gameObjectName, string childName, string defaultResponse)
+		{
+			try
+			{
+				return GetTextMeshProText(GameObject.Find(gameObjectName), childName, defaultResponse);
+			}
+			catch (Exception)
+			{
+				return defaultResponse;
+			}
+		}
+
+		public static void SetTextMeshProText(GameObject gameObject, string newText)
+		{
+			try
+			{
+				gameObject.GetComponent<TextMeshPro>().text = newText;
+			}
+			catch (Exception) {
+				Melon<Core>.Logger.Msg($"Could not change TextMeshPro value of {gameObject.name} to {newText}");
+			}
+		}
+
+		public static void SetTextMeshProText(GameObject gameObject, string childName, string newText)
+		{
+			SetTextMeshProText(GetChildGameObject(gameObject, childName), newText);
+		}
 
         public static string GetFsmString(string gameObjectName, string variableName, string defaultResponse)
         {
@@ -66,23 +121,50 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Utils
                 return null;
             }
         }
+		public static GameObject GetChildGameObject(GameObject nextChild, string[] childPath)
+		{
+			for (int i = 0; i < childPath.Length; i++)
+			{
+				Transform parentTransform = nextChild.transform;
+
+				for (int y = 0; y < parentTransform.childCount; y++)
+				{
+					nextChild = parentTransform.GetChild(y).gameObject;
+
+					Melon<Core>.Logger.Msg("Child: \"" + childPath[i] + "\" - Next Child: \"" + nextChild.name + "\"");
+
+					if (nextChild.name == childPath[i] && i == childPath.Length - 1) return nextChild;
+
+					if (nextChild.name == childPath[i]) break;
+				}
+			}
+
+			return null;
+		}
+
+		public static GameObject GetChildGameObject(GameObject parentObject, string childName)
+		{
+			try
+			{
+				return GetChildGameObject(parentObject, childName.Split(pathSeparator));
+			}
+			catch {
+				Melon<Core>.Logger.Msg($"Did not find child \"{childName}\" of {parentObject.name}");
+			}
+
+			return null;
+		}
 
 		public static GameObject GetChildGameObject(string parentName, string childName)
 		{
 			try
 			{
-				Transform parentTransform = GameObject.Find(parentName).transform;
-
-				for (int i = 0; i < parentTransform.childCount; i++)
-				{
-					GameObject child = parentTransform.GetChild(i).gameObject;
-
-					if (child.name == childName) return child;
-				}
+				return GetChildGameObject(GameObject.Find(parentName), childName);
 			}
-			catch {}
-
-			return null;
+			catch
+			{
+				return null;
+			}
 		}
 
 		public static PlayMakerFSM GetChildPlayMakerFSM(string parentName, string childName)
@@ -91,9 +173,9 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Utils
 			{
 				return GetChildGameObject(parentName, childName).GetComponent<PlayMakerFSM>();
 			}
-			catch {}
-
-			return null;
+			catch {
+				return null;
+			}
 		}
 
 		public static PlayMakerFSM GetPlayMakerFSM(string gameObjectName) {
