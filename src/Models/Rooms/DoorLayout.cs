@@ -1,7 +1,7 @@
 ﻿using Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers;
 using MelonLoader;
 
-namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Rooms
+namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Models.Rooms
 {
     public class DoorLayout
     {

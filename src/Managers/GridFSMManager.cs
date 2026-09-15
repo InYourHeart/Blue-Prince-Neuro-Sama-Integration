@@ -1,4 +1,4 @@
-﻿using Blue_Prince_Neuro_Sama_Integration_Mod.src.Rooms;
+﻿using Blue_Prince_Neuro_Sama_Integration_Mod.src.Models.Rooms;
 using Blue_Prince_Neuro_Sama_Integration_Mod.src.Utils;
 using Il2Cpp;
 using MelonLoader;

@@ -100,7 +100,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod
 						draftingAbilityToTake = null;
 					}
 
-					UpdatePlayerLocationContext();
+					//UpdatePlayerLocationContext();
 
 					//Checking for the third room plan's slide in animation to finish before sending the drafting context.
 					//

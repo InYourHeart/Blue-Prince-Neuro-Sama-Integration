@@ -1,5 +1,5 @@
 ﻿using Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers;
-using Blue_Prince_Neuro_Sama_Integration_Mod.src.Rooms;
+using Blue_Prince_Neuro_Sama_Integration_Mod.src.Models.Rooms;
 using MelonLoader;
 using NeuroSDKCsharp.Actions;
 using NeuroSDKCsharp.Json;

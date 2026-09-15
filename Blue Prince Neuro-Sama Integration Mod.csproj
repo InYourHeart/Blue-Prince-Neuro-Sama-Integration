@@ -377,9 +377,9 @@
 		<Compile Include="src\Core.cs" />
 		<Compile Include="src\Managers\GridFSMManager.cs" />
 		<Compile Include="src\Managers\InventoryManager.cs" />
-		<Compile Include="src\Rooms\Door.cs" />
-		<Compile Include="src\Rooms\DoorLayout.cs" />
-		<Compile Include="src\Rooms\FloorPlan.cs" />
+		<Compile Include="src\Models\Rooms\Door.cs" />
+		<Compile Include="src\Models\Rooms\DoorLayout.cs" />
+		<Compile Include="src\Models\Rooms\FloorPlan.cs" />
 		<Compile Include="src\Utils\FsmUtil.cs" />
 	</ItemGroup>
 

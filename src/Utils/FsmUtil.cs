@@ -131,7 +131,7 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod.src.Utils
 				{
 					nextChild = parentTransform.GetChild(y).gameObject;
 
-					Melon<Core>.Logger.Msg("Child: \"" + childPath[i] + "\" - Next Child: \"" + nextChild.name + "\"");
+					//Melon<Core>.Logger.Msg("Child: \"" + childPath[i] + "\" - Next Child: \"" + nextChild.name + "\"");
 
 					if (nextChild.name == childPath[i] && i == childPath.Length - 1) return nextChild;
 
