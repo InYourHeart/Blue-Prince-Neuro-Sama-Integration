@@ -353,6 +353,8 @@
 
 	<ItemGroup>
 		<Compile Include="src\Actions\ChooseFloorPlanAction.cs" />
+		<Compile Include="src\Actions\Darts\ChooseDartboardStageAnswerAction.cs" />
+		<Compile Include="src\Actions\Darts\ExitDartboardAction.cs" />
 		<Compile Include="src\Actions\Drafting Abilities\Misc\MiscAction.cs" />
 		<Compile Include="src\Actions\Drafting Abilities\Redraw\RedrawAction.cs" />
 		<Compile Include="src\Actions\Drafting Abilities\Rotation\RotationAction.cs" />
@@ -372,6 +374,7 @@
 		<Compile Include="src\Actions\Drafting Abilities\Redraw\ClassAction.cs" />
 		<Compile Include="src\Actions\Drafting Abilities\Redraw\IvoryDiceAction.cs" />
 		<Compile Include="src\Managers\CoatCheckManager.cs" />
+		<Compile Include="src\Managers\DartsManager.cs" />
 		<Compile Include="src\Managers\DocumentManager.cs" />
 		<Compile Include="src\Managers\DraftManager.cs" />
 		<Compile Include="src\Core.cs" />

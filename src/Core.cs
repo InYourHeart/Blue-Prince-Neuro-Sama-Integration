@@ -1,4 +1,5 @@
 ﻿using Blue_Prince_Neuro_Sama_Integration_Mod.src.Actions;
+using Blue_Prince_Neuro_Sama_Integration_Mod.src.Actions.Darts;
 using Blue_Prince_Neuro_Sama_Integration_Mod.src.Managers;
 using Blue_Prince_Neuro_Sama_Integration_Mod.src.Utils;
 using HarmonyLib;
@@ -21,8 +22,8 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod
     {
         public volatile static string actionToTake = "";
 		public volatile static DraftingAbilityAction draftingAbilityToTake = null;
+		public volatile static int dartsAnswer = -1;
 		public static string currentRoom = "None";
-
         public override void OnEarlyInitializeMelon()
         {
             SdkSetup.Initialize("Blue Prince", "");
@@ -79,9 +80,24 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod
 						PlayMakerFSM fsm = FsmUtil.GetPlayMakerFSM(actionToTake);
 
 						fsm.SendEvent("click");
+					} else if (actionToTake == new ExitDartboardAction().Name)
+					{
+						DartsManager.Exit();
 
-						actionToTake = "";
+						PlayMakerFSM fsm = DartsManager.GetExitFSM();
+
+						if (FsmUtil.GetActiveFsmState(fsm).name == "Prestate")
+						{
+							fsm.SendEvent("hov");
+						}
+
+						fsm.SendEvent("click");
+					} else if (actionToTake.Contains(new ChooseDartboardStageAnswerAction().Name))
+					{
+						DartsManager.PickAnswer(dartsAnswer);
 					}
+
+					actionToTake = "";
 
 					if (draftingAbilityToTake != null)
 					{
@@ -89,7 +105,8 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod
 
 						fsm.SendEvent("click");
 
-						if (draftingAbilityToTake.DRAFTING_ABILITY_TYPE.Equals(new ClassAction().DRAFTING_ABILITY_TYPE)) { 
+						if (draftingAbilityToTake.DRAFTING_ABILITY_TYPE.Equals(new ClassAction().DRAFTING_ABILITY_TYPE))
+						{
 							//Idk if anything needs to be here
 						}
 						else if (draftingAbilityToTake.DRAFTING_ABILITY_TYPE.Equals(new DancerAction().DRAFTING_ABILITY_TYPE))
@@ -145,6 +162,8 @@ namespace Blue_Prince_Neuro_Sama_Integration_Mod
 							DraftManager.EndRotation();
 						}
 					}
+
+					DartsManager.CheckState();
 				}
 				catch (Exception e)
 				{
